@@ -4,30 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Причудливые авантюры господина Эмиля Гиеновича</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lora:ital,wght@0,400;1,500&family=Montserrat:wght@400;500&family=EB+Garamond:ital,wght@0,400;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lora:ital,wght@0,400;1,500&family=Montserrat:wght@400;500&family=EB+Garamond:ital,wght@0,400;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
     <style>
         :root {
             --gold: #c6a667;
             --bg: #080808;
             --card-bg: #121212;
-            /* Темы */
             --paper-bg: #f4f1ea; --paper-text: #1a1a1a;
             --dark-bg: #1a1a1a; --dark-text: #ccc;
-            --oled-bg: #000000; --oled-text: #888;
             --sepia-bg: #2b2520; --sepia-text: #d3bc9f;
-            --ease: cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         body { background-color: var(--bg); color: #e0e0e0; font-family: 'Lora', serif; margin: 0; overflow-x: hidden; }
 
-        .progress-line {
-            position: fixed; top: 0; left: 0; height: 3px; background: var(--gold);
-            width: 0%; z-index: 2100; transition: width 0.1s;
-        }
+        /* Прогресс-бар */
+        .progress-line { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0%; z-index: 2100; }
 
         /* Герой-секция */
-        .hero { height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 6vw, 3.5rem); color: var(--gold); text-transform: uppercase; letter-spacing: 6px; padding: 0 20px; }
+        .hero { height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 6vw, 3.5rem); color: var(--gold); text-transform: uppercase; letter-spacing: 6px; padding: 0 20px; font-weight: 900; }
+        .hero-nav { margin-top: 30px; display: flex; gap: 15px; }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px 100px; }
         .volume-header { display: flex; align-items: center; gap: 20px; margin: 60px 0 30px; }
@@ -42,71 +38,84 @@
         }
         .chapter-card:hover { border-color: var(--gold); transform: translateY(-3px); }
 
+        /* Обсуждение */
+        #comments-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; backdrop-filter: blur(10px); }
+        .comm-box { max-width: 600px; margin: 50px auto; background: #111; border: 1px solid var(--gold); padding: 25px; border-radius: 12px; }
+        .comm-list { height: 400px; overflow-y: auto; margin-bottom: 20px; border-top: 1px solid #222; padding-top: 15px; }
+        .comm-item { background: #1a1a1a; padding: 12px; margin-bottom: 10px; border-radius: 6px; border-left: 3px solid var(--gold); animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
         /* Читалка */
-        #reader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; overflow-y: auto; background: #000; }
-        .toolbar {
-            position: sticky; top: 0; background: rgba(10,10,10,0.95); padding: 10px 20px;
-            display: flex; justify-content: space-between; align-items: center; z-index: 2050; border-bottom: 1px solid #333; backdrop-filter: blur(10px);
-        }
-        .book-content {
-            max-width: 700px; margin: 0 auto; padding: 60px 40px; line-height: 1.8; font-size: 1.25rem;
-            white-space: pre-wrap; transition: background 0.3s, color 0.3s; min-height: 100vh;
-        }
+        #reader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; overflow-y: auto; background: #000; scroll-behavior: smooth; }
+        .toolbar { position: sticky; top: 0; background: rgba(10,10,10,0.95); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2050; border-bottom: 1px solid #333; backdrop-filter: blur(10px); }
+        
+        .book-content { max-width: 750px; margin: 0 auto; padding: 40px 40px 150px; line-height: 1.8; font-size: 1.25rem; white-space: pre-wrap; transition: 0.3s; min-height: 100vh; }
+        
+        .chapter-intro { text-align: center; margin-bottom: 50px; padding-bottom: 30px; border-bottom: 1px double var(--gold); }
+        .chapter-intro h1 { font-family: 'Playfair Display'; color: var(--gold); font-size: 2.2rem; margin: 0; }
+        .chapter-intro p { font-style: italic; opacity: 0.6; margin-top: 10px; }
 
         /* Шрифты */
-        .font-lora { font-family: 'Lora', serif; }
-        .font-sans { font-family: 'Montserrat', sans-serif; }
-        .font-serif { font-family: 'EB Garamond', serif; font-size: 1.4rem; }
-        .font-mono { font-family: 'Courier Prime', monospace; }
+        .f-lora { font-family: 'Lora', serif; } 
+        .f-sans { font-family: 'Montserrat', sans-serif; }
+        .f-serif { font-family: 'EB Garamond', serif; font-size: 1.4rem; } 
+        .f-mono { font-family: 'Courier Prime', monospace; }
 
-        /* Темы */
-        .theme-paper { background: var(--paper-bg) !important; color: var(--paper-text) !important; }
-        .theme-dark { background: var(--dark-bg) !important; color: var(--dark-text) !important; }
-        .theme-oled { background: var(--oled-bg) !important; color: var(--oled-text) !important; }
-        .theme-sepia { background: var(--sepia-bg) !important; color: var(--sepia-text) !important; }
-
-        .tool-btn {
-            background: transparent; border: 1px solid var(--gold); color: var(--gold);
-            padding: 5px 10px; cursor: pointer; font-size: 0.7rem; margin-left: 4px; transition: 0.2s;
-        }
+        .tool-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 6px 12px; cursor: pointer; font-size: 0.7rem; text-transform: uppercase; margin-left: 5px; border-radius: 4px; }
         .tool-btn:hover { background: var(--gold); color: #000; }
 
-        .reading-time { font-size: 0.75rem; opacity: 0.5; margin-bottom: 20px; display: block; font-family: sans-serif; text-transform: uppercase; }
+        .nav-footer { max-width: 700px; margin: 50px auto; display: flex; justify-content: space-between; padding: 0 40px; }
 
-        .nav-footer { max-width: 700px; margin: 40px auto 100px; display: flex; justify-content: space-between; padding: 0 40px; }
-
-        .side-progress { position: fixed; right: 8px; top: 50%; height: 120px; width: 2px; background: rgba(198,166,103,0.1); transform: translateY(-50%); }
-        .side-fill { width: 100%; height: 0%; background: var(--gold); transition: 0.1s; }
+        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 10px 20px; border-radius: 20px; font-size: 0.8rem; display: none; z-index: 4000; }
     </style>
 </head>
 <body>
 
+<div id="toast">Позиция сохранена</div>
 <div class="progress-line" id="progLine"></div>
 
 <div class="hero">
     <div class="hero-title">Причудливые авантюры господина Эмиля Гиеновича</div>
+    <div class="hero-nav">
+        <button class="tool-btn" onclick="toggleComments(true)">💬 Комментарии</button>
+        <button class="tool-btn" onclick="window.scrollTo({top: 600, behavior: 'smooth'})">📖 Список глав</button>
+    </div>
+</div>
+
+<div id="comments-modal">
+    <div class="comm-box">
+        <h2 style="color:var(--gold); margin:0 0 15px 0; font-family: 'Playfair Display';">Обсуждение</h2>
+        <div class="comm-list" id="commList">
+            <p style="text-align:center; opacity:0.5;">Загрузка хроник...</p>
+        </div>
+        <textarea id="commInput" style="width:100%; background:#000; border:1px solid #333; color:white; padding:10px; box-sizing:border-box; border-radius: 6px; outline: none;" rows="3" placeholder="Ваш анонимный отзыв..."></textarea>
+        <div style="margin-top:15px; display:flex; justify-content: space-between;">
+            <button class="tool-btn" id="sendBtn">Отправить</button>
+            <button class="tool-btn" onclick="toggleComments(false)">Закрыть</button>
+        </div>
+    </div>
 </div>
 
 <div class="container" id="volumes-container"></div>
 
-<div id="reader" onscroll="handleReaderScroll()">
-    <div class="side-progress"><div class="side-fill" id="sideFill"></div></div>
-    
+<div id="reader" onscroll="onReaderScroll()">
     <div class="toolbar">
         <button class="tool-btn" onclick="closeBook()">← МЕНЮ</button>
         <div class="controls">
             <button class="tool-btn" onclick="changeSize(2)">A+</button>
             <button class="tool-btn" onclick="changeSize(-2)">A-</button>
-            <button class="tool-btn" onclick="toggleFont()">ШРИФТ</button>
-            <button class="tool-btn" title="Бумага" onclick="setTheme('paper')">📜</button>
-            <button class="tool-btn" title="Ночь" onclick="setTheme('dark')">🌘</button>
-            <button class="tool-btn" title="Сепия" onclick="setTheme('sepia')">☕</button>
-            <button class="tool-btn" title="OLED" onclick="setTheme('oled')">🌑</button>
+            <button class="tool-btn" onclick="cycleFont()">ШРИФТ</button>
+            <button class="tool-btn" onclick="applyTheme('paper')">📜</button>
+            <button class="tool-btn" onclick="applyTheme('dark')">🌘</button>
+            <button class="tool-btn" onclick="applyTheme('sepia')">☕</button>
         </div>
     </div>
 
-    <div class="book-content theme-paper font-lora" id="textContent">
-        <span class="reading-time" id="readTime"></span>
+    <div class="book-content theme-paper f-lora" id="textContent">
+        <div class="chapter-intro">
+            <h1 id="innerNum"></h1>
+            <p id="innerTitle"></p>
+        </div>
         <div id="chapterBody"></div>
     </div>
 
@@ -118,107 +127,172 @@
 
 <script src="chapters.js"></script>
 
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDD43BfRt9tkn4k0pgTRuQ7-SCR_PmjR8c",
+    authDomain: "emilka-site.firebaseapp.com",
+    projectId: "emilka-site",
+    storageBucket: "emilka-site.firebasestorage.app",
+    messagingSenderId: "767268444770",
+    appId: "1:767268444770:web:6c28367a9661d8dcebcf3b",
+    databaseURL: "https://emilka-site-default-rtdb.firebaseio.com"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const commentsRef = ref(db, 'comments');
+
+  // Отправка комментария
+  document.getElementById('sendBtn').onclick = function() {
+    const input = document.getElementById('commInput');
+    if(!input.value.trim()) return;
+    
+    push(commentsRef, {
+      text: input.value,
+      date: new Date().toLocaleDateString(),
+      timestamp: serverTimestamp()
+    }).then(() => {
+      input.value = '';
+    });
+  };
+
+  // Получение комментариев
+  onValue(commentsRef, (snapshot) => {
+    const list = document.getElementById('commList');
+    list.innerHTML = '';
+    const data = snapshot.val();
+    if(data) {
+      Object.values(data).reverse().forEach(c => {
+        list.innerHTML += `<div class="comm-item"><strong>Аноним:</strong> ${c.text} <br><small style="opacity:0.3">${c.date || ''}</small></div>`;
+      });
+    } else {
+      list.innerHTML = '<p style="text-align:center; opacity:0.3;">Здесь пока тишина. Напишите что-нибудь!</p>';
+    }
+  });
+</script>
+
 <script>
     const volumesContainer = document.getElementById('volumes-container');
     const reader = document.getElementById('reader');
-    const chapterBody = document.getElementById('chapterBody');
     const textContent = document.getElementById('textContent');
+    const chapterBody = document.getElementById('chapterBody');
     const progLine = document.getElementById('progLine');
-    const sideFill = document.getElementById('sideFill');
-    const readTimeTxt = document.getElementById('readTime');
 
     let currentId = 1;
-    const fonts = ['font-lora', 'font-sans', 'font-serif', 'font-mono'];
-    let currentFontIndex = 0;
+    let fontIndex = 0;
+    const fonts = ['f-lora', 'f-sans', 'f-serif', 'f-mono'];
 
     const volumeData = [
         { title: "Том I: Черти и Шакалы", range: [1, 22] },
         { title: "Том II: Как по маслу но без смазки", range: [23, 999] }
     ];
 
-    function renderVolumes() {
-        volumesContainer.innerHTML = '';
-        const saved = localStorage.getItem('lastChapter');
-
-        volumeData.forEach(vol => {
-            const volChapters = bookData.filter(c => c.id >= vol.range[0] && c.id <= vol.range[1]);
-            if (volChapters.length > 0) {
-                const section = document.createElement('div');
-                section.innerHTML = `
-                    <div class="volume-header">
-                        <h2>${vol.title}</h2><div class="volume-line"></div>
-                    </div>
-                    <div class="chapters-grid"></div>
-                `;
-                const grid = section.querySelector('.chapters-grid');
-                volChapters.forEach(ch => {
-                    const card = document.createElement('div');
-                    card.className = 'chapter-card';
-                    card.onclick = () => openChapter(ch.id);
-                    card.innerHTML = `
-                        <h3 style="color:var(--gold); margin:0; font-size:1.1rem;">Глава ${ch.id}</h3>
-                        <p style="opacity:0.5; font-size:0.7rem; margin-top:5px;">${ch.title}</p>
-                        ${ch.id >= 23 ? '<div style="position:absolute; top:8px; right:8px; color:var(--gold); font-size:0.5rem; border:1px solid var(--gold); padding:1px 3px;">NEW</div>' : ''}
-                        ${(saved == ch.id) ? '<div style="position:absolute; bottom:8px; color:var(--gold); font-size:0.5rem; opacity:0.7;">ВЫ ЗДЕСЬ</div>' : ''}
-                    `;
-                    grid.appendChild(card);
-                });
-                volumesContainer.appendChild(section);
-            }
-        });
-    }
-
+    // --- ЧИТАЛКА ---
     function openChapter(id) {
         currentId = id;
-        const chapter = bookData.find(c => c.id === id);
-        if (chapter) {
-            localStorage.setItem('lastChapter', id);
-            const words = chapter.content.split(/\s+/).length;
-            const minutes = Math.ceil(words / 180);
-            readTimeTxt.innerText = `Время чтения: ~${minutes} мин.`;
-            chapterBody.innerText = chapter.content;
-            reader.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            reader.scrollTop = 0;
-            updateNav();
-        }
+        const ch = bookData.find(item => item.id === id);
+        if (!ch) return;
+
+        localStorage.setItem('lastChapter', id);
+        document.getElementById('innerNum').innerText = `Глава ${ch.id}`;
+        document.getElementById('innerTitle').innerText = ch.title;
+        chapterBody.innerText = ch.content;
+
+        reader.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        
+        const savedPos = localStorage.getItem(`scroll_ch_${id}`);
+        setTimeout(() => {
+            reader.scrollTop = savedPos ? parseInt(savedPos) : 0;
+            if(savedPos) showToast("Место чтения восстановлено");
+        }, 150);
+
+        updateNavButtons();
     }
 
-    function handleReaderScroll() {
-        const st = reader.scrollTop;
-        const height = reader.scrollHeight - reader.clientHeight;
-        const scrolled = (st / height * 100);
+    function onReaderScroll() {
+        const scrolled = (reader.scrollTop / (reader.scrollHeight - reader.clientHeight)) * 100;
         progLine.style.width = scrolled + "%";
-        sideFill.style.height = scrolled + "%";
+        
+        clearTimeout(window.scrollSaveTimer);
+        window.scrollSaveTimer = setTimeout(() => {
+            if(reader.scrollTop > 10) {
+                localStorage.setItem(`scroll_ch_${currentId}`, reader.scrollTop);
+            }
+        }, 500);
     }
 
-    function setTheme(t) {
-        // Очищаем классы тем и добавляем новую
-        textContent.classList.remove('theme-paper', 'theme-dark', 'theme-oled', 'theme-sepia');
-        textContent.classList.add('theme-' + t);
+    function cycleFont() {
+        textContent.classList.remove(...fonts);
+        fontIndex = (fontIndex + 1) % fonts.length;
+        textContent.classList.add(fonts[fontIndex]);
     }
 
-    function toggleFont() {
-        textContent.classList.remove(fonts[currentFontIndex]);
-        currentFontIndex = (currentFontIndex + 1) % fonts.length;
-        textContent.classList.add(fonts[currentFontIndex]);
+    function applyTheme(t) {
+        textContent.className = `book-content ${fonts[fontIndex]} theme-${t}`;
+        const colors = {
+            paper: { bg: "#f4f1ea", text: "#1a1a1a" },
+            dark: { bg: "#1a1a1a", text: "#ccc" },
+            sepia: { bg: "#2b2520", text: "#d3bc9f" }
+        };
+        textContent.style.backgroundColor = colors[t].bg;
+        textContent.style.color = colors[t].text;
     }
 
     function changeSize(delta) {
-        const style = window.getComputedStyle(textContent);
-        const newSize = parseFloat(style.fontSize) + delta;
-        if(newSize > 10 && newSize < 50) textContent.style.fontSize = newSize + 'px';
+        const cur = parseFloat(window.getComputedStyle(textContent).fontSize);
+        textContent.style.fontSize = (cur + delta) + 'px';
     }
 
-    function closeBook() { reader.style.display = 'none'; document.body.style.overflow = 'auto'; renderVolumes(); }
-    
-    function updateNav() {
+    function closeBook() {
+        reader.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        renderVolumes();
+    }
+
+    function toggleComments(show) {
+        document.getElementById('comments-modal').style.display = show ? 'block' : 'none';
+        document.body.style.overflow = show ? 'hidden' : 'auto';
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 2000);
+    }
+
+    function updateNavButtons() {
         document.getElementById('prevBtn').style.visibility = currentId > 1 ? 'visible' : 'hidden';
         document.getElementById('nextBtn').style.visibility = currentId < bookData.length ? 'visible' : 'hidden';
     }
 
     function nextChapter() { openChapter(currentId + 1); }
     function prevChapter() { openChapter(currentId - 1); }
+
+    function renderVolumes() {
+        volumesContainer.innerHTML = '';
+        const saved = localStorage.getItem('lastChapter');
+        volumeData.forEach(vol => {
+            const volChapters = bookData.filter(c => c.id >= vol.range[0] && c.id <= vol.range[1]);
+            if (volChapters.length > 0) {
+                const section = document.createElement('div');
+                section.innerHTML = `<div class="volume-header"><h2>${vol.title}</h2><div class="volume-line"></div></div><div class="chapters-grid"></div>`;
+                const grid = section.querySelector('.chapters-grid');
+                volChapters.forEach(ch => {
+                    const card = document.createElement('div');
+                    card.className = 'chapter-card';
+                    card.onclick = () => openChapter(ch.id);
+                    card.innerHTML = `<h3>Глава ${ch.id}</h3><p style="opacity:0.5; font-size:0.8rem;">${ch.title}</p>${(saved == ch.id) ? '<small style="color:var(--gold); margin-top:5px;">ПРОДОЛЖИТЬ</small>' : ''}`;
+                    grid.appendChild(card);
+                });
+                volumesContainer.appendChild(section);
+            }
+        });
+    }
 
     renderVolumes();
 </script>
