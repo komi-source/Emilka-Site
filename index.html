@@ -39,24 +39,26 @@
         .comm-box { max-width: 600px; margin: 50px auto; background: #111; border: 1px solid var(--gold); padding: 25px; border-radius: 12px; }
         .comm-list { height: 400px; overflow-y: auto; margin-bottom: 20px; border-top: 1px solid #222; padding-top: 15px; }
         .comm-item { background: #1a1a1a; padding: 12px; margin-bottom: 10px; border-radius: 6px; border-left: 3px solid var(--gold); position: relative; animation: fadeIn 0.3s ease; }
-        .del-btn { position: absolute; top: 10px; right: 10px; color: #ff4444; background: transparent; border: none; cursor: pointer; font-size: 0.65rem; opacity: 0.5; text-transform: uppercase; }
-        .del-btn:hover { opacity: 1; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .del-btn { position: absolute; top: 10px; right: 10px; color: #ff4444; background: transparent; border: none; cursor: pointer; font-size: 0.65rem; opacity: 0.5; }
+        
+        /* Реакции */
+        .reactions { display: flex; gap: 8px; margin-top: 8px; }
+        .react-btn { background: #222; border: 1px solid #333; color: #fff; border-radius: 15px; padding: 2px 8px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
+        .react-btn:hover { border-color: var(--gold); background: #2a2a2a; }
 
         /* Читалка */
         #reader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; overflow-y: auto; background: #000; scroll-behavior: smooth; }
         .toolbar { position: sticky; top: 0; background: rgba(10,10,10,0.95); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2050; border-bottom: 1px solid #333; backdrop-filter: blur(10px); }
         .book-content { max-width: 750px; margin: 0 auto; padding: 40px 40px 50px; line-height: 1.8; font-size: 1.25rem; white-space: pre-wrap; transition: 0.3s; min-height: 80vh; }
-        
         .chapter-intro { text-align: center; margin-bottom: 50px; padding-bottom: 30px; border-bottom: 1px double var(--gold); }
         .chapter-intro h1 { font-family: 'Playfair Display'; color: var(--gold); font-size: 2.2rem; margin: 0; }
-        .comm-hint { font-size: 0.8rem; color: var(--gold); opacity: 0.7; margin-top: 15px; font-style: italic; letter-spacing: 1px; }
+        .comm-hint { font-size: 0.8rem; color: var(--gold); opacity: 0.7; margin-top: 15px; font-style: italic; }
 
         .tool-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 6px 12px; cursor: pointer; font-size: 0.7rem; text-transform: uppercase; margin-left: 5px; border-radius: 4px; }
         .tool-btn:hover { background: var(--gold); color: #000; }
 
-        .nav-footer { max-width: 700px; margin: 20px auto 100px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
-        .nav-btns { display: flex; justify-content: space-between; width: 100%; padding: 0 40px; box-sizing: border-box; }
+        .nav-footer { max-width: 700px; margin: 20px auto 100px; display: flex; flex-direction: column; align-items: center; gap: 25px; }
+        .chapter-reactions { display: flex; gap: 15px; justify-content: center; background: #111; padding: 15px 30px; border-radius: 30px; border: 1px solid #222; }
 
         #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 10px 20px; border-radius: 20px; font-size: 0.8rem; display: none; z-index: 4000; }
     </style>
@@ -105,14 +107,22 @@
         <div class="chapter-intro">
             <h1 id="innerNum"></h1>
             <p id="innerTitle" style="font-style: italic; opacity: 0.6; margin-top: 10px;"></p>
-            <div class="comm-hint">Напоминание: обсудить главу можно в самом её конце ✨</div>
+            <div class="comm-hint">Напоминание: обсудить и оценить главу можно в самом её конце ✨</div>
         </div>
         <div id="chapterBody"></div>
     </div>
 
     <div class="nav-footer">
+        <div style="color:var(--gold); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px;">Оцените главу</div>
+        <div class="chapter-reactions" id="chapReacts">
+            <button class="react-btn" onclick="addChapReact('🔥')">🔥 <span id="v-🔥">0</span></button>
+            <button class="react-btn" onclick="addChapReact('❤️')">❤️ <span id="v-❤️">0</span></button>
+            <button class="react-btn" onclick="addChapReact('👏')">👏 <span id="v-👏">0</span></button>
+        </div>
+        
         <button class="tool-btn" style="padding: 15px 40px; font-size: 0.9rem;" id="chapterCommBtn">💬 Обсудить главу</button>
-        <div class="nav-btns">
+        
+        <div style="display: flex; justify-content: space-between; width: 100%; padding: 0 40px;">
             <button class="tool-btn" id="prevBtn" onclick="prevChapter()">← Назад</button>
             <button class="tool-btn" id="nextBtn" onclick="nextChapter()">Вперед →</button>
         </div>
@@ -123,7 +133,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, push, onValue, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  import { getDatabase, ref, push, onValue, remove, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDD43BfRt9tkn4k0pgTRuQ7-SCR_PmjR8c",
@@ -138,15 +148,11 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   let currentTopic = 'global';
-  let currentListener = null;
 
   const getMyMsgs = () => JSON.parse(localStorage.getItem('my_msgs') || '[]');
-  const saveMyMsg = (id) => {
-    const msgs = getMyMsgs();
-    msgs.push(id);
-    localStorage.setItem('my_msgs', JSON.stringify(msgs));
-  };
+  const saveMyMsg = (id) => { const msgs = getMyMsgs(); msgs.push(id); localStorage.setItem('my_msgs', JSON.stringify(msgs)); };
 
+  // --- ЛОГИКА КОММЕНТАРИЕВ ---
   window.openComments = function(topic) {
     currentTopic = topic;
     document.getElementById('commHeader').innerText = topic === 'global' ? 'Общий чат' : `Обсуждение главы ${topic}`;
@@ -157,8 +163,7 @@
   window.toggleComments = (show) => { document.getElementById('comments-modal').style.display = show ? 'block' : 'none'; };
 
   function listenComments() {
-    const topicRef = ref(db, 'comments/' + currentTopic);
-    onValue(topicRef, (snapshot) => {
+    onValue(ref(db, 'comments/' + currentTopic), (snapshot) => {
       const list = document.getElementById('commList');
       list.innerHTML = '';
       const data = snapshot.val();
@@ -167,33 +172,49 @@
         Object.entries(data).reverse().forEach(([id, c]) => {
           const isMine = myMsgs.includes(id);
           const delBtn = isMine ? `<button class="del-btn" onclick="deleteMsg('${id}')">Удалить</button>` : '';
-          list.innerHTML += `<div class="comm-item">${delBtn}<strong>Аноним:</strong> ${c.text}<br><small style="opacity:0.3">${c.date || ''}</small></div>`;
+          const r = c.reactions || {};
+          list.innerHTML += `
+            <div class="comm-item">
+              ${delBtn}
+              <strong>Аноним:</strong> ${c.text}<br>
+              <div class="reactions">
+                <button class="react-btn" onclick="addReact('${id}', '👍')">👍 ${r['👍'] || 0}</button>
+                <button class="react-btn" onclick="addReact('${id}', '😂')">😂 ${r['😂'] || 0}</button>
+                <button class="react-btn" onclick="addReact('${id}', '❤️')">❤️ ${r['❤️'] || 0}</button>
+              </div>
+              <small style="opacity:0.3; font-size:0.6rem;">${c.date || ''}</small>
+            </div>`;
         });
-      } else {
-        list.innerHTML = '<p style="text-align:center; opacity:0.3;">Пока нет комментариев...</p>';
       }
     });
   }
 
-  window.deleteMsg = function(id) {
-    if(confirm('Удалить ваш комментарий?')) {
-      remove(ref(db, `comments/${currentTopic}/${id}`));
-    }
+  window.addReact = (id, type) => {
+    runTransaction(ref(db, `comments/${currentTopic}/${id}/reactions/${type}`), (count) => (count || 0) + 1);
   };
+
+  window.deleteMsg = (id) => { if(confirm('Удалить ваш комментарий?')) remove(ref(db, `comments/${currentTopic}/${id}`)); };
 
   document.getElementById('sendBtn').onclick = function() {
     const input = document.getElementById('commInput');
     if(!input.value.trim()) return;
-    const topicRef = ref(db, 'comments/' + currentTopic);
-    const msgData = {
-      text: input.value,
-      date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-      timestamp: serverTimestamp()
-    };
-    push(topicRef, msgData).then((res) => {
-      saveMyMsg(res.key);
-      input.value = '';
+    const msgData = { text: input.value, date: new Date().toLocaleString(), timestamp: serverTimestamp() };
+    push(ref(db, 'comments/' + currentTopic), msgData).then((res) => { saveMyMsg(res.key); input.value = ''; });
+  };
+
+  // --- РЕАКЦИИ НА ГЛАВЫ ---
+  window.loadChapReacts = (id) => {
+    onValue(ref(db, `chapter_reactions/${id}`), (snapshot) => {
+      const val = snapshot.val() || {};
+      ['🔥', '❤️', '👏'].forEach(emoji => {
+        document.getElementById(`v-${emoji}`).innerText = val[emoji] || 0;
+      });
     });
+  };
+
+  window.addChapReact = (emoji) => {
+    runTransaction(ref(db, `chapter_reactions/${currentId}/${emoji}`), (count) => (count || 0) + 1);
+    showToast("Спасибо за оценку!");
   };
 </script>
 
@@ -215,7 +236,10 @@
         document.getElementById('innerNum').innerText = `Глава ${ch.id}`;
         document.getElementById('innerTitle').innerText = ch.title;
         chapterBody.innerText = ch.content;
+        
         document.getElementById('chapterCommBtn').onclick = () => openComments(id);
+        if(window.loadChapReacts) window.loadChapReacts(id);
+
         reader.style.display = 'block';
         document.body.style.overflow = 'hidden';
         const savedPos = localStorage.getItem(`scroll_ch_${id}`);
@@ -240,6 +264,8 @@
     }
     function changeSize(delta) { const cur = parseFloat(window.getComputedStyle(textContent).fontSize); textContent.style.fontSize = (cur + delta) + 'px'; }
     function closeBook() { reader.style.display = 'none'; document.body.style.overflow = 'auto'; renderVolumes(); }
+    function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
+    
     function updateNavButtons() {
         document.getElementById('prevBtn').style.visibility = currentId > 1 ? 'visible' : 'hidden';
         document.getElementById('nextBtn').style.visibility = currentId < bookData.length ? 'visible' : 'hidden';
@@ -258,8 +284,7 @@
                 section.innerHTML = `<div class="volume-header"><h2>${vol.title}</h2><div class="volume-line"></div></div><div class="chapters-grid"></div>`;
                 const grid = section.querySelector('.chapters-grid');
                 volChapters.forEach(ch => {
-                    const card = document.createElement('div');
-                    card.className = 'chapter-card';
+                    const card = document.createElement('div'); card.className = 'chapter-card';
                     card.onclick = () => openChapter(ch.id);
                     card.innerHTML = `<h3>Глава ${ch.id}</h3><p style="opacity:0.5; font-size:0.8rem;">${ch.title}</p>${(saved == ch.id) ? '<small style="color:var(--gold); margin-top:5px;">ПРОДОЛЖИТЬ</small>' : ''}`;
                     grid.appendChild(card);
