@@ -16,11 +16,7 @@
         }
 
         body { background-color: var(--bg); color: #e0e0e0; font-family: 'Lora', serif; margin: 0; overflow-x: hidden; }
-
-        /* Прогресс-бар */
         .progress-line { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0%; z-index: 2100; }
-
-        /* Герой-секция */
         .hero { height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 6vw, 3.5rem); color: var(--gold); text-transform: uppercase; letter-spacing: 6px; padding: 0 20px; font-weight: 900; }
         .hero-nav { margin-top: 30px; display: flex; gap: 15px; }
@@ -42,53 +38,45 @@
         #comments-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; backdrop-filter: blur(10px); }
         .comm-box { max-width: 600px; margin: 50px auto; background: #111; border: 1px solid var(--gold); padding: 25px; border-radius: 12px; }
         .comm-list { height: 400px; overflow-y: auto; margin-bottom: 20px; border-top: 1px solid #222; padding-top: 15px; }
-        .comm-item { background: #1a1a1a; padding: 12px; margin-bottom: 10px; border-radius: 6px; border-left: 3px solid var(--gold); animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .comm-item { background: #1a1a1a; padding: 12px; margin-bottom: 10px; border-radius: 6px; border-left: 3px solid var(--gold); position: relative; animation: fadeIn 0.3s ease; }
+        .del-btn { position: absolute; top: 10px; right: 10px; color: #ff4444; background: transparent; border: none; cursor: pointer; font-size: 0.7rem; opacity: 0.6; }
+        .del-btn:hover { opacity: 1; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Читалка */
         #reader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; overflow-y: auto; background: #000; scroll-behavior: smooth; }
         .toolbar { position: sticky; top: 0; background: rgba(10,10,10,0.95); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2050; border-bottom: 1px solid #333; backdrop-filter: blur(10px); }
-        
-        .book-content { max-width: 750px; margin: 0 auto; padding: 40px 40px 150px; line-height: 1.8; font-size: 1.25rem; white-space: pre-wrap; transition: 0.3s; min-height: 100vh; }
-        
+        .book-content { max-width: 750px; margin: 0 auto; padding: 40px 40px 50px; line-height: 1.8; font-size: 1.25rem; white-space: pre-wrap; transition: 0.3s; min-height: 80vh; }
         .chapter-intro { text-align: center; margin-bottom: 50px; padding-bottom: 30px; border-bottom: 1px double var(--gold); }
         .chapter-intro h1 { font-family: 'Playfair Display'; color: var(--gold); font-size: 2.2rem; margin: 0; }
-        .chapter-intro p { font-style: italic; opacity: 0.6; margin-top: 10px; }
-
-        /* Шрифты */
-        .f-lora { font-family: 'Lora', serif; } 
-        .f-sans { font-family: 'Montserrat', sans-serif; }
-        .f-serif { font-family: 'EB Garamond', serif; font-size: 1.4rem; } 
-        .f-mono { font-family: 'Courier Prime', monospace; }
 
         .tool-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 6px 12px; cursor: pointer; font-size: 0.7rem; text-transform: uppercase; margin-left: 5px; border-radius: 4px; }
         .tool-btn:hover { background: var(--gold); color: #000; }
 
-        .nav-footer { max-width: 700px; margin: 50px auto; display: flex; justify-content: space-between; padding: 0 40px; }
+        .nav-footer { max-width: 700px; margin: 20px auto 100px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .nav-btns { display: flex; justify-content: space-between; width: 100%; padding: 0 40px; box-sizing: border-box; }
 
         #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 10px 20px; border-radius: 20px; font-size: 0.8rem; display: none; z-index: 4000; }
     </style>
 </head>
 <body>
 
-<div id="toast">Позиция сохранена</div>
+<div id="toast"></div>
 <div class="progress-line" id="progLine"></div>
 
 <div class="hero">
     <div class="hero-title">Причудливые авантюры господина Эмиля Гиеновича</div>
     <div class="hero-nav">
-        <button class="tool-btn" onclick="toggleComments(true)">💬 Комментарии</button>
+        <button class="tool-btn" onclick="openComments('global')">💬 Общий чат</button>
         <button class="tool-btn" onclick="window.scrollTo({top: 600, behavior: 'smooth'})">📖 Список глав</button>
     </div>
 </div>
 
 <div id="comments-modal">
     <div class="comm-box">
-        <h2 style="color:var(--gold); margin:0 0 15px 0; font-family: 'Playfair Display';">Обсуждение</h2>
-        <div class="comm-list" id="commList">
-            <p style="text-align:center; opacity:0.5;">Загрузка хроник...</p>
-        </div>
-        <textarea id="commInput" style="width:100%; background:#000; border:1px solid #333; color:white; padding:10px; box-sizing:border-box; border-radius: 6px; outline: none;" rows="3" placeholder="Ваш анонимный отзыв..."></textarea>
+        <h2 id="commHeader" style="color:var(--gold); margin:0 0 15px 0; font-family: 'Playfair Display'; font-size: 1.2rem;">Обсуждение</h2>
+        <div class="comm-list" id="commList"></div>
+        <textarea id="commInput" style="width:100%; background:#000; border:1px solid #333; color:white; padding:10px; box-sizing:border-box; border-radius: 6px; outline: none;" rows="3" placeholder="Напишите что-нибудь..."></textarea>
         <div style="margin-top:15px; display:flex; justify-content: space-between;">
             <button class="tool-btn" id="sendBtn">Отправить</button>
             <button class="tool-btn" onclick="toggleComments(false)">Закрыть</button>
@@ -120,8 +108,11 @@
     </div>
 
     <div class="nav-footer">
-        <button class="tool-btn" id="prevBtn" onclick="prevChapter()">← Назад</button>
-        <button class="tool-btn" id="nextBtn" onclick="nextChapter()">Вперед →</button>
+        <button class="tool-btn" style="padding: 15px 40px; font-size: 0.9rem;" id="chapterCommBtn">💬 Обсудить главу</button>
+        <div class="nav-btns">
+            <button class="tool-btn" id="prevBtn" onclick="prevChapter()">← Назад</button>
+            <button class="tool-btn" id="nextBtn" onclick="nextChapter()">Вперед →</button>
+        </div>
     </div>
 </div>
 
@@ -129,7 +120,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  import { getDatabase, ref, push, onValue, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDD43BfRt9tkn4k0pgTRuQ7-SCR_PmjR8c",
@@ -143,35 +134,76 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
-  const commentsRef = ref(db, 'comments');
+  let currentTopic = 'global';
+  let unsubscribe = null;
 
-  // Отправка комментария
+  // Мои сообщения (храним ID в браузере)
+  const getMyMsgs = () => JSON.parse(localStorage.getItem('my_msgs') || '[]');
+  const saveMyMsg = (id) => {
+    const msgs = getMyMsgs();
+    msgs.push(id);
+    localStorage.setItem('my_msgs', JSON.stringify(msgs));
+  };
+
+  window.openComments = function(topic) {
+    currentTopic = topic;
+    document.getElementById('commHeader').innerText = topic === 'global' ? 'Общий чат' : `Обсуждение главы ${topic}`;
+    toggleComments(true);
+    listenComments();
+  };
+
+  function listenComments() {
+    if(unsubscribe) unsubscribe();
+    const topicRef = ref(db, 'comments/' + currentTopic);
+    
+    onValue(topicRef, (snapshot) => {
+      const list = document.getElementById('commList');
+      list.innerHTML = '';
+      const data = snapshot.val();
+      const myMsgs = getMyMsgs();
+
+      if(data) {
+        Object.entries(data).reverse().forEach(([id, c]) => {
+          const isMine = myMsgs.includes(id);
+          const delHtml = isMine ? `<button class="del-btn" onclick="deleteMsg('${id}')">Удалить</button>` : '';
+          
+          list.innerHTML += `
+            <div class="comm-item">
+              ${delHtml}
+              <strong>Аноним:</strong> ${c.text} 
+              <br><small style="opacity:0.3">${c.date || ''}</small>
+            </div>`;
+        });
+      } else {
+        list.innerHTML = '<p style="text-align:center; opacity:0.3;">Здесь пока пусто...</p>';
+      }
+    });
+  }
+
+  window.deleteMsg = function(id) {
+    if(confirm('Удалить ваш комментарий?')) {
+      remove(ref(db, `comments/${currentTopic}/${id}`));
+    }
+  };
+
   document.getElementById('sendBtn').onclick = function() {
     const input = document.getElementById('commInput');
     if(!input.value.trim()) return;
     
-    push(commentsRef, {
+    const topicRef = ref(db, 'comments/' + currentTopic);
+    const newMsgRef = push(topicRef);
+    
+    const msgData = {
       text: input.value,
-      date: new Date().toLocaleDateString(),
+      date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
       timestamp: serverTimestamp()
-    }).then(() => {
+    };
+
+    push(topicRef, msgData).then((res) => {
+      saveMyMsg(res.key);
       input.value = '';
     });
   };
-
-  // Получение комментариев
-  onValue(commentsRef, (snapshot) => {
-    const list = document.getElementById('commList');
-    list.innerHTML = '';
-    const data = snapshot.val();
-    if(data) {
-      Object.values(data).reverse().forEach(c => {
-        list.innerHTML += `<div class="comm-item"><strong>Аноним:</strong> ${c.text} <br><small style="opacity:0.3">${c.date || ''}</small></div>`;
-      });
-    } else {
-      list.innerHTML = '<p style="text-align:center; opacity:0.3;">Здесь пока тишина. Напишите что-нибудь!</p>';
-    }
-  });
 </script>
 
 <script>
@@ -180,101 +212,59 @@
     const textContent = document.getElementById('textContent');
     const chapterBody = document.getElementById('chapterBody');
     const progLine = document.getElementById('progLine');
-
     let currentId = 1;
     let fontIndex = 0;
     const fonts = ['f-lora', 'f-sans', 'f-serif', 'f-mono'];
 
-    const volumeData = [
-        { title: "Том I: Черти и Шакалы", range: [1, 22] },
-        { title: "Том II: Как по маслу но без смазки", range: [23, 999] }
-    ];
-
-    // --- ЧИТАЛКА ---
     function openChapter(id) {
         currentId = id;
         const ch = bookData.find(item => item.id === id);
         if (!ch) return;
-
         localStorage.setItem('lastChapter', id);
         document.getElementById('innerNum').innerText = `Глава ${ch.id}`;
         document.getElementById('innerTitle').innerText = ch.title;
         chapterBody.innerText = ch.content;
+        
+        // Кнопка обсуждения конкретной главы
+        document.getElementById('chapterCommBtn').onclick = () => openComments(id);
 
         reader.style.display = 'block';
         document.body.style.overflow = 'hidden';
-        
         const savedPos = localStorage.getItem(`scroll_ch_${id}`);
-        setTimeout(() => {
-            reader.scrollTop = savedPos ? parseInt(savedPos) : 0;
-            if(savedPos) showToast("Место чтения восстановлено");
-        }, 150);
-
+        setTimeout(() => { reader.scrollTop = savedPos ? parseInt(savedPos) : 0; }, 100);
         updateNavButtons();
     }
 
     function onReaderScroll() {
         const scrolled = (reader.scrollTop / (reader.scrollHeight - reader.clientHeight)) * 100;
         progLine.style.width = scrolled + "%";
-        
         clearTimeout(window.scrollSaveTimer);
         window.scrollSaveTimer = setTimeout(() => {
-            if(reader.scrollTop > 10) {
-                localStorage.setItem(`scroll_ch_${currentId}`, reader.scrollTop);
-            }
+            if(reader.scrollTop > 10) localStorage.setItem(`scroll_ch_${currentId}`, reader.scrollTop);
         }, 500);
     }
 
-    function cycleFont() {
-        textContent.classList.remove(...fonts);
-        fontIndex = (fontIndex + 1) % fonts.length;
-        textContent.classList.add(fonts[fontIndex]);
-    }
-
-    function applyTheme(t) {
+    function cycleFont() { textContent.classList.remove(...fonts); fontIndex = (fontIndex + 1) % fonts.length; textContent.classList.add(fonts[fontIndex]); }
+    function applyTheme(t) { 
         textContent.className = `book-content ${fonts[fontIndex]} theme-${t}`;
-        const colors = {
-            paper: { bg: "#f4f1ea", text: "#1a1a1a" },
-            dark: { bg: "#1a1a1a", text: "#ccc" },
-            sepia: { bg: "#2b2520", text: "#d3bc9f" }
-        };
-        textContent.style.backgroundColor = colors[t].bg;
-        textContent.style.color = colors[t].text;
+        const colors = { paper: { bg: "#f4f1ea", text: "#1a1a1a" }, dark: { bg: "#1a1a1a", text: "#ccc" }, sepia: { bg: "#2b2520", text: "#d3bc9f" } };
+        textContent.style.backgroundColor = colors[t].bg; textContent.style.color = colors[t].text;
     }
-
-    function changeSize(delta) {
-        const cur = parseFloat(window.getComputedStyle(textContent).fontSize);
-        textContent.style.fontSize = (cur + delta) + 'px';
-    }
-
-    function closeBook() {
-        reader.style.display = 'none';
-        document.body.style.overflow = 'auto';
-        renderVolumes();
-    }
-
-    function toggleComments(show) {
-        document.getElementById('comments-modal').style.display = show ? 'block' : 'none';
-        document.body.style.overflow = show ? 'hidden' : 'auto';
-    }
-
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.innerText = msg;
-        t.style.display = 'block';
-        setTimeout(() => t.style.display = 'none', 2000);
-    }
-
+    function changeSize(delta) { const cur = parseFloat(window.getComputedStyle(textContent).fontSize); textContent.style.fontSize = (cur + delta) + 'px'; }
+    function closeBook() { reader.style.display = 'none'; document.body.style.overflow = 'auto'; renderVolumes(); }
+    function toggleComments(show) { document.getElementById('comments-modal').style.display = show ? 'block' : 'none'; }
+    function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
+    
     function updateNavButtons() {
         document.getElementById('prevBtn').style.visibility = currentId > 1 ? 'visible' : 'hidden';
         document.getElementById('nextBtn').style.visibility = currentId < bookData.length ? 'visible' : 'hidden';
     }
-
     function nextChapter() { openChapter(currentId + 1); }
     function prevChapter() { openChapter(currentId - 1); }
 
     function renderVolumes() {
         volumesContainer.innerHTML = '';
+        const volumeData = [{ title: "Том I: Черти и Шакалы", range: [1, 22] }, { title: "Том II: Как по маслу но без смазки", range: [23, 999] }];
         const saved = localStorage.getItem('lastChapter');
         volumeData.forEach(vol => {
             const volChapters = bookData.filter(c => c.id >= vol.range[0] && c.id <= vol.range[1]);
@@ -293,9 +283,7 @@
             }
         });
     }
-
     renderVolumes();
 </script>
-
 </body>
 </html>
