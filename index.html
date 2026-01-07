@@ -2,65 +2,86 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Причудливые авантюры господина Эмиля Гиеновича</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lora:ital,wght@0,400;1,500&family=Montserrat:wght@400;500&family=EB+Garamond:ital,wght@0,400;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Причудливые авантюры Эмиля Гиеновича</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lora:ital,wght@0,400;1,500&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --gold: #c6a667;
             --bg: #080808;
             --card-bg: #121212;
-            --paper-bg: #f4f1ea; --paper-text: #1a1a1a;
-            --dark-bg: #1a1a1a; --dark-text: #ccc;
-            --sepia-bg: #2b2520; --sepia-text: #d3bc9f;
         }
 
-        body { background-color: var(--bg); color: #e0e0e0; font-family: 'Lora', serif; margin: 0; overflow-x: hidden; }
-        .progress-line { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0%; z-index: 2100; }
-        .hero { height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 6vw, 3.5rem); color: var(--gold); text-transform: uppercase; letter-spacing: 6px; padding: 0 20px; font-weight: 900; }
-        .hero-nav { margin-top: 30px; display: flex; gap: 15px; }
+        body { background-color: var(--bg); color: #e0e0e0; font-family: 'Lora', serif; margin: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        
+        /* Тонкая линия прогресса сверху */
+        .progress-line { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0%; z-index: 10000; transition: width 0.2s; }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px 100px; }
-        .volume-header { display: flex; align-items: center; gap: 20px; margin: 60px 0 30px; }
-        .volume-header h2 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 1.8rem; margin: 0; text-transform: uppercase; }
+        /* Главный экран */
+        .hero { height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: radial-gradient(circle at center, #1a1a1a 0%, #080808 100%); }
+        .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 6vw, 2.5rem); color: var(--gold); text-transform: uppercase; letter-spacing: 4px; padding: 0 20px; font-weight: 900; line-height: 1.2; }
+        .hero-nav { margin-top: 30px; display: flex; gap: 10px; }
+
+        /* Сетка глав */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 15px 100px; }
+        .volume-header { display: flex; align-items: center; gap: 15px; margin: 50px 0 20px; }
+        .volume-header h2 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 1.2rem; margin: 0; text-transform: uppercase; letter-spacing: 2px; }
         .volume-line { flex-grow: 1; height: 1px; background: linear-gradient(to right, var(--gold), transparent); }
 
-        .chapters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .chapters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
         .chapter-card {
-            background: var(--card-bg); border: 1px solid #222; height: 160px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            padding: 15px; cursor: pointer; transition: 0.3s; position: relative; text-align: center;
+            background: var(--card-bg); border: 1px solid #222; border-radius: 12px;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 20px; cursor: pointer; transition: 0.3s; position: relative; text-align: center;
         }
-        .chapter-card:hover { border-color: var(--gold); transform: translateY(-3px); }
+        .chapter-card:active { transform: scale(0.95); }
+        .chapter-card.completed { border-color: #2ecc71; }
 
-        /* Комментарии */
-        #comments-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; backdrop-filter: blur(10px); }
-        .comm-box { max-width: 600px; margin: 50px auto; background: #111; border: 1px solid var(--gold); padding: 25px; border-radius: 12px; }
-        .comm-list { height: 400px; overflow-y: auto; margin-bottom: 20px; border-top: 1px solid #222; padding-top: 15px; }
-        .comm-item { background: #1a1a1a; padding: 12px; margin-bottom: 10px; border-radius: 6px; border-left: 3px solid var(--gold); position: relative; animation: fadeIn 0.3s ease; }
-        .del-btn { position: absolute; top: 10px; right: 10px; color: #ff4444; background: transparent; border: none; cursor: pointer; font-size: 0.65rem; opacity: 0.5; }
-        
-        /* Реакции */
-        .reactions { display: flex; gap: 8px; margin-top: 8px; }
-        .react-btn { background: #222; border: 1px solid #333; color: #fff; border-radius: 15px; padding: 2px 8px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
-        .react-btn:hover { border-color: var(--gold); background: #2a2a2a; }
+        /* Круговой прогресс в карточке */
+        .prog-circle { position: relative; width: 40px; height: 40px; margin-bottom: 10px; }
+        .prog-circle svg { transform: rotate(-90deg); width: 40px; height: 40px; }
+        .prog-circle circle { fill: none; stroke-width: 3; }
+        .circle-bg { stroke: #222; }
+        .circle-fg { stroke: var(--gold); stroke-dasharray: 113; stroke-dashoffset: 113; transition: 0.5s; stroke-linecap: round; }
 
         /* Читалка */
-        #reader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; overflow-y: auto; background: #000; scroll-behavior: smooth; }
-        .toolbar { position: sticky; top: 0; background: rgba(10,10,10,0.95); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2050; border-bottom: 1px solid #333; backdrop-filter: blur(10px); }
-        .book-content { max-width: 750px; margin: 0 auto; padding: 40px 40px 50px; line-height: 1.8; font-size: 1.25rem; white-space: pre-wrap; transition: 0.3s; min-height: 80vh; }
-        .chapter-intro { text-align: center; margin-bottom: 50px; padding-bottom: 30px; border-bottom: 1px double var(--gold); }
-        .chapter-intro h1 { font-family: 'Playfair Display'; color: var(--gold); font-size: 2.2rem; margin: 0; }
-        .comm-hint { font-size: 0.8rem; color: var(--gold); opacity: 0.7; margin-top: 15px; font-style: italic; }
+        #reader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9000; overflow-y: auto; background: #0d0d0d; }
+        
+        /* Улучшенный Toolbar для телефона */
+        .toolbar { 
+            position: sticky; top: 0; background: rgba(13,13,13,0.95); 
+            padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; 
+            z-index: 9500; border-bottom: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); 
+        }
+        .controls-group { display: flex; gap: 5px; }
 
-        .tool-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 6px 12px; cursor: pointer; font-size: 0.7rem; text-transform: uppercase; margin-left: 5px; border-radius: 4px; }
-        .tool-btn:hover { background: var(--gold); color: #000; }
+        .book-content { max-width: 700px; margin: 0 auto; padding: 30px 20px 60px; line-height: 1.8; font-size: 1.2rem; transition: 0.4s; }
+        .chapter-intro { text-align: center; margin-bottom: 40px; }
+        .chapter-intro h1 { font-family: 'Playfair Display'; color: var(--gold); font-size: 1.8rem; margin: 0; }
 
-        .nav-footer { max-width: 700px; margin: 20px auto 100px; display: flex; flex-direction: column; align-items: center; gap: 25px; }
-        .chapter-reactions { display: flex; gap: 15px; justify-content: center; background: #111; padding: 15px 30px; border-radius: 30px; border: 1px solid #222; }
+        .tool-btn { 
+            background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--gold); 
+            padding: 8px 12px; cursor: pointer; font-size: 0.7rem; font-family: 'Montserrat';
+            text-transform: uppercase; border-radius: 8px; font-weight: bold;
+        }
+        .tool-btn:active { background: var(--gold); color: #000; }
 
-        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 10px 20px; border-radius: 20px; font-size: 0.8rem; display: none; z-index: 4000; }
+        /* Футер читалки */
+        .nav-footer { max-width: 600px; margin: 0 auto; padding: 40px 20px 100px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .chapter-reactions { display: flex; gap: 10px; justify-content: center; }
+        .react-btn { background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 20px; padding: 6px 12px; cursor: pointer; font-size: 0.9rem; }
+
+        /* Комментарии */
+        #comments-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 10000; }
+        .comm-box { max-width: 500px; margin: 20px auto; background: #111; border: 1px solid var(--gold); padding: 20px; border-radius: 15px; height: 90vh; display: flex; flex-direction: column; }
+        .comm-list { flex-grow: 1; overflow-y: auto; margin-bottom: 15px; }
+        .comm-item { background: #1a1a1a; padding: 12px; margin-bottom: 10px; border-radius: 8px; border-left: 3px solid var(--gold); font-size: 0.9rem; }
+
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 12px 25px; border-radius: 50px; font-size: 0.8rem; display: none; z-index: 11000; font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.5); text-align: center;}
+        
+        .theme-paper { background-color: #f4f1ea !important; color: #1a1a1a !important; }
+        .theme-dark { background-color: #0d0d0d !important; color: #d1d1d1 !important; }
+        .theme-sepia { background-color: #2b2520 !important; color: #d3bc9f !important; }
     </style>
 </head>
 <body>
@@ -69,18 +90,18 @@
 <div class="progress-line" id="progLine"></div>
 
 <div class="hero">
-    <div class="hero-title">Причудливые авантюры господина Эмиля Гиеновича</div>
+    <div class="hero-title">Причудливые авантюры<br>Эмиля Гиеновича</div>
     <div class="hero-nav">
         <button class="tool-btn" onclick="openComments('global')">💬 Общий чат</button>
-        <button class="tool-btn" onclick="window.scrollTo({top: 600, behavior: 'smooth'})">📖 Список глав</button>
+        <button class="tool-btn" onclick="getEmilQuote()">💡 Цитата Эмиля</button>
     </div>
 </div>
 
 <div id="comments-modal">
     <div class="comm-box">
-        <h2 id="commHeader" style="color:var(--gold); margin:0 0 15px 0; font-family: 'Playfair Display'; font-size: 1.2rem;"></h2>
+        <h2 id="commHeader" style="color:var(--gold); margin:0 0 15px 0; font-family: 'Playfair Display'; font-size: 1.1rem;"></h2>
         <div class="comm-list" id="commList"></div>
-        <textarea id="commInput" style="width:100%; background:#000; border:1px solid #333; color:white; padding:10px; box-sizing:border-box; border-radius: 6px; outline: none;" rows="3" placeholder="Ваши мысли..."></textarea>
+        <textarea id="commInput" style="width:100%; background:#000; border:1px solid #333; color:white; padding:10px; border-radius: 8px; outline: none;" rows="3" placeholder="Ваши мысли..."></textarea>
         <div style="margin-top:15px; display:flex; justify-content: space-between;">
             <button class="tool-btn" id="sendBtn">Отправить</button>
             <button class="tool-btn" onclick="toggleComments(false)">Закрыть</button>
@@ -91,23 +112,22 @@
 <div class="container" id="volumes-container"></div>
 
 <div id="reader" onscroll="onReaderScroll()">
-    <div class="toolbar">
+    <div class="toolbar" id="topBar">
         <button class="tool-btn" onclick="closeBook()">← МЕНЮ</button>
-        <div class="controls">
+        <div class="controls-group">
             <button class="tool-btn" onclick="changeSize(2)">A+</button>
             <button class="tool-btn" onclick="changeSize(-2)">A-</button>
-            <button class="tool-btn" onclick="cycleFont()">ШРИФТ</button>
+        </div>
+        <div class="controls-group">
             <button class="tool-btn" onclick="applyTheme('paper')">📜</button>
             <button class="tool-btn" onclick="applyTheme('dark')">🌘</button>
-            <button class="tool-btn" onclick="applyTheme('sepia')">☕</button>
         </div>
     </div>
 
-    <div class="book-content theme-paper f-lora" id="textContent">
+    <div class="book-content theme-dark" id="textContent">
         <div class="chapter-intro">
             <h1 id="innerNum"></h1>
             <p id="innerTitle" style="font-style: italic; opacity: 0.6; margin-top: 10px;"></p>
-            <div class="comm-hint">Напоминание: обсудить и оценить главу можно в самом её конце ✨</div>
         </div>
         <div id="chapterBody"></div>
     </div>
@@ -120,11 +140,11 @@
             <button class="react-btn" onclick="addChapReact('👏')">👏 <span id="v-👏">0</span></button>
         </div>
         
-        <button class="tool-btn" style="padding: 15px 40px; font-size: 0.9rem;" id="chapterCommBtn">💬 Обсудить главу</button>
+        <button class="tool-btn" style="padding: 15px 40px; width: 80%;" id="chapterCommBtn">💬 Обсудить главу</button>
         
-        <div style="display: flex; justify-content: space-between; width: 100%; padding: 0 40px;">
-            <button class="tool-btn" id="prevBtn" onclick="prevChapter()">← Назад</button>
-            <button class="tool-btn" id="nextBtn" onclick="nextChapter()">Вперед →</button>
+        <div style="display: flex; gap: 10px; width: 100%; padding: 0 20px; box-sizing: border-box;">
+            <button class="tool-btn" style="flex: 1;" id="prevBtn" onclick="prevChapter()">← Назад</button>
+            <button class="tool-btn" style="flex: 1;" id="nextBtn" onclick="nextChapter()">Вперед →</button>
         </div>
     </div>
 </div>
@@ -132,6 +152,7 @@
 <script src="chapters.js"></script>
 
 <script type="module">
+  // FIREBASE LOGIC (из твоего кода)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getDatabase, ref, push, onValue, remove, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
@@ -139,9 +160,6 @@
     apiKey: "AIzaSyDD43BfRt9tkn4k0pgTRuQ7-SCR_PmjR8c",
     authDomain: "emilka-site.firebaseapp.com",
     projectId: "emilka-site",
-    storageBucket: "emilka-site.firebasestorage.app",
-    messagingSenderId: "767268444770",
-    appId: "1:767268444770:web:6c28367a9661d8dcebcf3b",
     databaseURL: "https://emilka-site-default-rtdb.firebaseio.com"
   };
 
@@ -149,60 +167,31 @@
   const db = getDatabase(app);
   let currentTopic = 'global';
 
-  const getMyMsgs = () => JSON.parse(localStorage.getItem('my_msgs') || '[]');
-  const saveMyMsg = (id) => { const msgs = getMyMsgs(); msgs.push(id); localStorage.setItem('my_msgs', JSON.stringify(msgs)); };
-
-  // --- ЛОГИКА КОММЕНТАРИЕВ ---
   window.openComments = function(topic) {
     currentTopic = topic;
-    document.getElementById('commHeader').innerText = topic === 'global' ? 'Общий чат' : `Обсуждение главы ${topic}`;
+    document.getElementById('commHeader').innerText = topic === 'global' ? 'Общий чат' : `Глава ${topic}`;
     document.getElementById('comments-modal').style.display = 'block';
-    listenComments();
-  };
-
-  window.toggleComments = (show) => { document.getElementById('comments-modal').style.display = show ? 'block' : 'none'; };
-
-  function listenComments() {
-    onValue(ref(db, 'comments/' + currentTopic), (snapshot) => {
-      const list = document.getElementById('commList');
-      list.innerHTML = '';
-      const data = snapshot.val();
-      const myMsgs = getMyMsgs();
-      if(data) {
-        Object.entries(data).reverse().forEach(([id, c]) => {
-          const isMine = myMsgs.includes(id);
-          const delBtn = isMine ? `<button class="del-btn" onclick="deleteMsg('${id}')">Удалить</button>` : '';
-          const r = c.reactions || {};
-          list.innerHTML += `
-            <div class="comm-item">
-              ${delBtn}
-              <strong>Аноним:</strong> ${c.text}<br>
-              <div class="reactions">
-                <button class="react-btn" onclick="addReact('${id}', '👍')">👍 ${r['👍'] || 0}</button>
-                <button class="react-btn" onclick="addReact('${id}', '😂')">😂 ${r['😂'] || 0}</button>
-                <button class="react-btn" onclick="addReact('${id}', '❤️')">❤️ ${r['❤️'] || 0}</button>
-              </div>
-              <small style="opacity:0.3; font-size:0.6rem;">${c.date || ''}</small>
-            </div>`;
-        });
-      }
+    onValue(ref(db, 'comments/' + currentTopic), (snap) => {
+        const list = document.getElementById('commList');
+        list.innerHTML = '';
+        const data = snap.val();
+        if(data) {
+            Object.entries(data).reverse().forEach(([id, c]) => {
+                list.innerHTML += `<div class="comm-item"><strong>Аноним:</strong> ${c.text}</div>`;
+            });
+        }
     });
-  }
-
-  window.addReact = (id, type) => {
-    runTransaction(ref(db, `comments/${currentTopic}/${id}/reactions/${type}`), (count) => (count || 0) + 1);
   };
 
-  window.deleteMsg = (id) => { if(confirm('Удалить ваш комментарий?')) remove(ref(db, `comments/${currentTopic}/${id}`)); };
+  window.toggleComments = (s) => document.getElementById('comments-modal').style.display = s ? 'block' : 'none';
 
-  document.getElementById('sendBtn').onclick = function() {
+  document.getElementById('sendBtn').onclick = () => {
     const input = document.getElementById('commInput');
     if(!input.value.trim()) return;
-    const msgData = { text: input.value, date: new Date().toLocaleString(), timestamp: serverTimestamp() };
-    push(ref(db, 'comments/' + currentTopic), msgData).then((res) => { saveMyMsg(res.key); input.value = ''; });
+    push(ref(db, 'comments/' + currentTopic), { text: input.value, timestamp: serverTimestamp() });
+    input.value = '';
   };
 
-  // --- РЕАКЦИИ НА ГЛАВЫ ---
   window.loadChapReacts = (id) => {
     onValue(ref(db, `chapter_reactions/${id}`), (snapshot) => {
       const val = snapshot.val() || {};
@@ -214,82 +203,118 @@
 
   window.addChapReact = (emoji) => {
     runTransaction(ref(db, `chapter_reactions/${currentId}/${emoji}`), (count) => (count || 0) + 1);
-    showToast("Спасибо за оценку!");
+    showToast("Принято! 🔥");
   };
 </script>
 
 <script>
     const volumesContainer = document.getElementById('volumes-container');
     const reader = document.getElementById('reader');
-    const textContent = document.getElementById('textContent');
-    const chapterBody = document.getElementById('chapterBody');
     const progLine = document.getElementById('progLine');
     let currentId = 1;
-    let fontIndex = 0;
-    const fonts = ['f-lora', 'f-sans', 'f-serif', 'f-mono'];
+
+    // ЦИТАТЫ ЭМИЛЯ
+    function getEmilQuote() {
+        const quotes = [
+            "Если тебя поймали за руку — говори, что это не твоя рука, а рука судьбы.",
+            "Шакалы лают — Эмиль забирает их кошельки.",
+            "Честность — это как золотой унитаз. Красиво, но в авантюре совершенно бесполезно.",
+            "Работа не волк. Работа — это вообще не про меня.",
+            "Если план провалился, значит это был не план, а дегустация хаоса.",
+            "Никогда не беги от проблем. Используй тактическое перекатывание в сторону богатства.",
+            "Лучше один раз украсть, чем сто раз попросить в долг (но лучше и то, и другое).",
+            "Моя совесть чиста. Я ей никогда не пользуюсь."
+        ];
+        showToast("«" + quotes[Math.floor(Math.random()*quotes.length)] + "»");
+    }
+
+    function getProg(id) { return JSON.parse(localStorage.getItem(`p_v5_${id}`) || '{"perc":0,"pos":0}'); }
+    function setProg(id, perc, pos) { localStorage.setItem(`p_v5_${id}`, JSON.stringify({perc, pos})); }
 
     function openChapter(id) {
         currentId = id;
-        const ch = bookData.find(item => item.id === id);
-        if (!ch) return;
-        localStorage.setItem('lastChapter', id);
+        const ch = bookData.find(c => c.id === id);
+        if(!ch) return;
+
         document.getElementById('innerNum').innerText = `Глава ${ch.id}`;
         document.getElementById('innerTitle').innerText = ch.title;
-        chapterBody.innerText = ch.content;
-        
+        document.getElementById('chapterBody').innerText = ch.content;
         document.getElementById('chapterCommBtn').onclick = () => openComments(id);
+        
         if(window.loadChapReacts) window.loadChapReacts(id);
 
         reader.style.display = 'block';
         document.body.style.overflow = 'hidden';
-        const savedPos = localStorage.getItem(`scroll_ch_${id}`);
-        setTimeout(() => { reader.scrollTop = savedPos ? parseInt(savedPos) : 0; }, 100);
+        
+        const saved = getProg(id);
+        setTimeout(() => { reader.scrollTop = saved.pos; }, 50);
         updateNavButtons();
     }
 
     function onReaderScroll() {
         const scrolled = (reader.scrollTop / (reader.scrollHeight - reader.clientHeight)) * 100;
         progLine.style.width = scrolled + "%";
-        clearTimeout(window.scrollSaveTimer);
-        window.scrollSaveTimer = setTimeout(() => {
-            if(reader.scrollTop > 10) localStorage.setItem(`scroll_ch_${currentId}`, reader.scrollTop);
-        }, 500);
+        clearTimeout(window.sTimer);
+        window.sTimer = setTimeout(() => {
+            setProg(currentId, Math.round(scrolled), reader.scrollTop);
+        }, 300);
     }
 
-    function cycleFont() { textContent.classList.remove(...fonts); fontIndex = (fontIndex + 1) % fonts.length; textContent.classList.add(fonts[fontIndex]); }
-    function applyTheme(t) { 
-        textContent.className = `book-content ${fonts[fontIndex]} theme-${t}`;
-        const colors = { paper: { bg: "#f4f1ea", text: "#1a1a1a" }, dark: { bg: "#1a1a1a", text: "#ccc" }, sepia: { bg: "#2b2520", text: "#d3bc9f" } };
-        textContent.style.backgroundColor = colors[t].bg; textContent.style.color = colors[t].text;
+    function applyTheme(t) {
+        const c = document.getElementById('textContent');
+        const b = document.getElementById('topBar');
+        c.className = `book-content theme-${t}`;
+        b.style.background = t === 'paper' ? '#f4f1ea' : '#0d0d0d';
     }
-    function changeSize(delta) { const cur = parseFloat(window.getComputedStyle(textContent).fontSize); textContent.style.fontSize = (cur + delta) + 'px'; }
+
+    function changeSize(d) {
+        const c = document.getElementById('textContent');
+        const s = parseFloat(window.getComputedStyle(c).fontSize);
+        c.style.fontSize = (s + d) + 'px';
+    }
+
     function closeBook() { reader.style.display = 'none'; document.body.style.overflow = 'auto'; renderVolumes(); }
-    function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000); }
     
-    function updateNavButtons() {
-        document.getElementById('prevBtn').style.visibility = currentId > 1 ? 'visible' : 'hidden';
-        document.getElementById('nextBtn').style.visibility = currentId < bookData.length ? 'visible' : 'hidden';
+    function showToast(m) {
+        const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 3500);
     }
-    function nextChapter() { openChapter(currentId + 1); }
-    function prevChapter() { openChapter(currentId - 1); }
+
+    function updateNavButtons() {
+        document.getElementById('prevBtn').style.opacity = currentId > 1 ? '1' : '0.3';
+        document.getElementById('nextBtn').style.opacity = currentId < bookData.length ? '1' : '0.3';
+    }
+    function nextChapter() { if(currentId < bookData.length) openChapter(currentId + 1); }
+    function prevChapter() { if(currentId > 1) openChapter(currentId - 1); }
 
     function renderVolumes() {
         volumesContainer.innerHTML = '';
-        const volumeData = [{ title: "Том I: Черти и Шакалы", range: [1, 22] }, { title: "Том II: Как по маслу но без смазки", range: [23, 999] }];
-        const saved = localStorage.getItem('lastChapter');
-        volumeData.forEach(vol => {
-            const volChapters = bookData.filter(c => c.id >= vol.range[0] && c.id <= vol.range[1]);
-            if (volChapters.length > 0) {
-                const section = document.createElement('div');
-                section.innerHTML = `<div class="volume-header"><h2>${vol.title}</h2><div class="volume-line"></div></div><div class="chapters-grid"></div>`;
-                const grid = section.querySelector('.chapters-grid');
-                volChapters.forEach(ch => {
-                    const card = document.createElement('div'); card.className = 'chapter-card';
+        const vols = [{ t: "Том I: Черти и Шакалы", r: [1, 22] }, { t: "Том II: Как по маслу...", r: [23, 100] }];
+        
+        vols.forEach(v => {
+            const chs = bookData.filter(c => c.id >= v.r[0] && c.id <= v.r[1]);
+            if (chs.length > 0) {
+                const sec = document.createElement('div');
+                sec.innerHTML = `<div class="volume-header"><h2>${v.t}</h2><div class="volume-line"></div></div><div class="chapters-grid"></div>`;
+                const grid = sec.querySelector('.chapters-grid');
+                chs.forEach(ch => {
+                    const p = getProg(ch.id);
+                    const done = p.perc >= 98;
+                    const offset = 113 - (113 * (p.perc / 100)); // 2*PI*18
+                    const card = document.createElement('div');
+                    card.className = `chapter-card ${done ? 'completed' : ''}`;
                     card.onclick = () => openChapter(ch.id);
-                    card.innerHTML = `<h3>Глава ${ch.id}</h3><p style="opacity:0.5; font-size:0.8rem;">${ch.title}</p>${(saved == ch.id) ? '<small style="color:var(--gold); margin-top:5px;">ПРОДОЛЖИТЬ</small>' : ''}`;
+                    card.innerHTML = `
+                        <div class="prog-circle">
+                            <svg><circle class="circle-bg" cx="20" cy="20" r="18"></circle>
+                            <circle class="circle-fg" cx="20" cy="20" r="18" style="stroke-dashoffset:${offset}; ${done?'stroke:#2ecc71':''}"></circle></svg>
+                        </div>
+                        <h3 style="margin:0; font-size:1rem;">Глава ${ch.id}</h3>
+                        <p style="opacity:0.5; font-size:0.7rem; margin-top:5px;">${ch.title}</p>
+                    `;
                     grid.appendChild(card);
                 });
-                volumesContainer.appendChild(section);
+                volumesContainer.appendChild(sec);
             }
         });
     }
