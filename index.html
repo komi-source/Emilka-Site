@@ -3,87 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Причудливые авантюры Эмиля Гиеновича</title>
+    <title>Эмиль Гиенович — Авантюры</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lora:ital,wght@0,400;1,500&family=Montserrat:wght@600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --gold: #c6a667;
             --bg: #080808;
             --card-bg: #121212;
+            --sepia-bg: #2b2520;
+            --sepia-text: #d3bc9f;
         }
 
         body { background-color: var(--bg); color: #e0e0e0; font-family: 'Lora', serif; margin: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
-        /* Прогресс сверху */
-        .progress-line { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0%; z-index: 10000; transition: width 0.2s; }
+        .progress-line { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0%; z-index: 10000; }
 
-        /* Герой */
-        .hero { height: 45vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: radial-gradient(circle at center, #1a1a1a 0%, #080808 100%); border-bottom: 1px solid #222; }
-        .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(1.4rem, 5vw, 2.2rem); color: var(--gold); text-transform: uppercase; letter-spacing: 4px; padding: 0 20px; font-weight: 900; }
-        .hero-nav { margin-top: 25px; display: flex; gap: 10px; }
+        /* Герой и Цитатник */
+        .hero { min-height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; background: radial-gradient(circle at center, #1a1a1a 0%, #080808 100%); }
+        .hero-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--gold); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; }
 
-        /* Контейнер и Сетка */
-        .container { max-width: 1000px; margin: 0 auto; padding: 0 15px 100px; }
+        .quote-box {
+            background: rgba(198, 166, 103, 0.05);
+            border: 1px solid var(--gold);
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 400px;
+            cursor: pointer;
+            position: relative;
+            transition: 0.3s;
+            margin: 10px;
+        }
+        .quote-box:active { transform: scale(0.98); background: rgba(198, 166, 103, 0.1); }
+        .quote-box::before { content: "“"; position: absolute; top: -10px; left: 20px; font-size: 3rem; color: var(--gold); opacity: 0.3; }
+        #emil-quote { font-style: italic; font-size: 0.95rem; line-height: 1.5; color: #fff; }
+
+        /* Сетка глав */
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px 15px 100px; }
         .volume-header { display: flex; align-items: center; gap: 15px; margin: 40px 0 20px; }
-        .volume-header h2 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 1.1rem; margin: 0; text-transform: uppercase; }
+        .volume-header h2 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 1rem; margin: 0; text-transform: uppercase; }
         .volume-line { flex-grow: 1; height: 1px; background: linear-gradient(to right, var(--gold), transparent); }
 
-        .chapters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-        .chapter-card { background: var(--card-bg); border: 1px solid #222; border-radius: 12px; padding: 20px; cursor: pointer; transition: 0.3s; text-align: center; }
-        .chapter-card:active { transform: scale(0.95); }
+        .chapters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+        .chapter-card { background: var(--card-bg); border: 1px solid #222; border-radius: 12px; padding: 15px; cursor: pointer; text-align: center; position: relative; }
         .chapter-card.completed { border-color: #2ecc71; }
 
-        /* Кольцо прогресса */
-        .prog-circle { position: relative; width: 36px; height: 36px; margin-bottom: 10px; display: inline-block; }
-        .prog-circle svg { transform: rotate(-90deg); width: 36px; height: 36px; }
-        .prog-circle circle { fill: none; stroke-width: 4; }
-        .circle-bg { stroke: #222; }
-        .circle-fg { stroke: var(--gold); stroke-dasharray: 100; stroke-dashoffset: 100; transition: 0.5s; stroke-linecap: round; }
-
         /* ЧИТАЛКА */
-        #reader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9000; overflow-y: auto; transition: background 0.5s ease; }
-        
-        .toolbar { 
-            position: sticky; top: 0; background: rgba(13,13,13,0.9); padding: 8px 12px; 
-            display: flex; justify-content: space-between; align-items: center; 
-            z-index: 9500; border-bottom: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(15px); 
-        }
+        #reader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9000; overflow-y: auto; }
+        .toolbar { position: sticky; top: 0; background: rgba(13,13,13,0.95); padding: 10px; display: flex; justify-content: space-between; align-items: center; z-index: 9500; backdrop-filter: blur(10px); border-bottom: 1px solid #222; }
 
-        .book-content { max-width: 650px; margin: 0 auto; padding: 30px 20px 80px; line-height: 1.8; font-size: 1.2rem; transition: background 0.5s, color 0.5s; min-height: 100vh; }
+        .book-content { max-width: 650px; margin: 0 auto; padding: 30px 20px 100px; line-height: 1.8; font-size: 1.2rem; min-height: 100vh; }
         
         .tool-btn { 
-            background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--gold); 
-            padding: 6px 10px; cursor: pointer; font-size: 0.65rem; font-family: 'Montserrat';
-            text-transform: uppercase; border-radius: 6px; font-weight: 800;
+            background: #1a1a1a; border: 1.5px solid var(--gold); color: var(--gold); 
+            padding: 8px 12px; cursor: pointer; font-size: 0.7rem; font-family: 'Montserrat';
+            text-transform: uppercase; border-radius: 8px; font-weight: 800;
         }
 
         /* Темы */
         .theme-paper { background-color: #f4f1ea !important; color: #1a1a1a !important; }
         .theme-dark { background-color: #0d0d0d !important; color: #d1d1d1 !important; }
-        .theme-sepia { background-color: #2b2520 !important; color: #d3bc9f !important; }
+        .theme-sepia { background-color: var(--sepia-bg) !important; color: var(--sepia-text) !important; }
 
-        /* Комментарии Модалка */
-        #comments-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 10000; }
-        .comm-box { max-width: 500px; margin: 10px auto; background: #111; border: 1px solid var(--gold); padding: 20px; border-radius: 15px; height: 92vh; display: flex; flex-direction: column; }
-        .comm-list { flex-grow: 1; overflow-y: auto; margin-bottom: 15px; }
-        .comm-item { background: #1a1a1a; padding: 12px; margin-bottom: 10px; border-radius: 8px; border-left: 3px solid var(--gold); position: relative; }
-        .del-btn { position: absolute; top: 5px; right: 8px; color: #ff4444; background: none; border: none; font-size: 0.6rem; cursor: pointer; font-weight: bold; }
+        /* ОКНО КОММЕНТАРИЕВ (ФИКС) */
+        #comments-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; }
+        .comm-wrapper { display: flex; flex-direction: column; height: 100%; max-width: 600px; margin: 0 auto; background: #080808; }
         
-        .react-btn-small { background: #222; border: 1px solid #333; color: #fff; border-radius: 10px; padding: 2px 6px; font-size: 0.7rem; margin-top: 5px; cursor: pointer; }
-
-        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 12px 25px; border-radius: 50px; font-size: 0.8rem; display: none; z-index: 11000; font-weight: bold; text-align: center; max-width: 80vw; }
+        .comm-header { padding: 20px; border-bottom: 1px solid #222; color: var(--gold); font-family: 'Playfair Display'; display: flex; justify-content: space-between; align-items: center; }
+        .comm-list { flex: 1; overflow-y: auto; padding: 15px; }
+        .comm-item { background: #121212; padding: 12px; margin-bottom: 10px; border-radius: 10px; border-left: 3px solid var(--gold); position: relative; }
         
-        /* Анимация при смене темы */
-        .fade-anim { animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .comm-input-area { padding: 15px; background: #111; border-top: 1px solid #222; }
+        #commInput { width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; box-sizing: border-box; outline: none; margin-bottom: 10px; font-family: 'Lora'; }
+        
+        .comm-btns { display: flex; gap: 10px; }
+        .btn-send { flex: 2; background: var(--gold); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-family: 'Montserrat'; }
+        .btn-close { flex: 1; background: #222; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; }
 
-        /* Золотое мерцание при дочитывании */
-        @keyframes gold-victory {
-            0% { box-shadow: inset 0 0 0 transparent; }
-            50% { box-shadow: inset 0 0 80px var(--gold); }
-            100% { box-shadow: inset 0 0 0 transparent; }
-        }
-        .chapter-done-flash { animation: gold-victory 2s ease-out; }
+        .del-btn { color: #ff4444; background: none; border: none; font-size: 0.6rem; float: right; cursor: pointer; }
+
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 12px 25px; border-radius: 50px; font-size: 0.8rem; display: none; z-index: 30000; font-weight: bold; text-align: center; }
     </style>
 </head>
 <body>
@@ -93,23 +91,29 @@
 
 <div id="main-ui">
     <div class="hero">
-        <div class="hero-title">Эмиль Гиенович<br><span style="font-size: 0.8rem; letter-spacing: 2px; opacity: 0.7;">Авантюры и Причуды</span></div>
-        <div class="hero-nav">
-            <button class="tool-btn" onclick="openComments('global')">💬 ЧАТ</button>
-            <button class="tool-btn" onclick="getEmilQuote()">💡 ЦИТАТА</button>
+        <div class="hero-title">Эмиль Гиенович</div>
+        
+        <div class="quote-box" onclick="getEmilQuote()">
+            <div id="emil-quote">Нажми на меня, чтобы услышать базу...</div>
+            <div style="font-size: 0.6rem; color: var(--gold); margin-top: 10px; text-align: right; font-weight: bold;">— Эмиль Стетхем</div>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <button class="tool-btn" onclick="openComments('global')">💬 ОБЩИЙ ЧАТ</button>
         </div>
     </div>
+    
     <div class="container" id="volumes-container"></div>
 </div>
 
 <div id="reader" onscroll="onReaderScroll()">
     <div class="toolbar" id="topBar">
         <button class="tool-btn" onclick="closeBook()">← МЕНЮ</button>
-        <div style="display: flex; gap: 4px;">
+        <div style="display: flex; gap: 5px;">
             <button class="tool-btn" onclick="changeSize(2)">A+</button>
             <button class="tool-btn" onclick="changeSize(-2)">A-</button>
         </div>
-        <div style="display: flex; gap: 4px;">
+        <div style="display: flex; gap: 5px;">
             <button class="tool-btn" onclick="applyTheme('paper')">📜</button>
             <button class="tool-btn" onclick="applyTheme('sepia')">☕</button>
             <button class="tool-btn" onclick="applyTheme('dark')">🌘</button>
@@ -118,19 +122,13 @@
 
     <div class="book-content theme-dark" id="textContent">
         <div style="text-align: center; margin-bottom: 30px;">
-            <h1 id="innerNum" style="color:var(--gold); font-family: 'Playfair Display';"></h1>
-            <p id="innerTitle" style="font-style: italic; opacity: 0.5;"></p>
+            <h1 id="innerNum" style="color:var(--gold); font-family: 'Playfair Display'; margin:0;"></h1>
+            <p id="innerTitle" style="font-style: italic; opacity: 0.5; margin-top: 5px;"></p>
         </div>
         <div id="chapterBody"></div>
         
         <div style="margin-top: 50px; display: flex; flex-direction: column; align-items: center; gap: 20px;">
-            <div style="color:var(--gold); font-size: 0.7rem; letter-spacing: 2px;">ОЦЕНИТЕ ГЛАВУ</div>
-            <div style="display: flex; gap: 10px;">
-                <button class="react-btn-small" onclick="addChapReact('🔥')">🔥 <span id="v-🔥">0</span></button>
-                <button class="react-btn-small" onclick="addChapReact('❤️')">❤️ <span id="v-❤️">0</span></button>
-                <button class="react-btn-small" onclick="addChapReact('👏')">👏 <span id="v-👏">0</span></button>
-            </div>
-            <button class="tool-btn" style="padding: 15px 40px; width: 100%;" id="chapterCommBtn">💬 ОБСУДИТЬ</button>
+            <button class="tool-btn" style="padding: 15px; width: 100%;" id="chapterCommBtn">💬 ОБСУДИТЬ ГЛАВУ</button>
             <div style="display: flex; gap: 10px; width: 100%;">
                 <button class="tool-btn" style="flex: 1;" onclick="prevChapter()">← НАЗАД</button>
                 <button class="tool-btn" style="flex: 1;" onclick="nextChapter()">ВПЕРЕД →</button>
@@ -140,13 +138,18 @@
 </div>
 
 <div id="comments-modal">
-    <div class="comm-box">
-        <h2 id="commHeader" style="color:var(--gold); margin:0 0 15px 0; font-family: 'Playfair Display'; font-size: 1rem;"></h2>
+    <div class="comm-wrapper">
+        <div class="comm-header">
+            <span id="commHeaderTitle">Чат</span>
+            <span style="font-size: 0.7rem; opacity: 0.6;">Анонимно</span>
+        </div>
         <div class="comm-list" id="commList"></div>
-        <textarea id="commInput" style="width:100%; background:#000; border:1px solid #333; color:white; padding:10px; border-radius: 8px; outline: none;" rows="3" placeholder="Пиши как Эмиль..."></textarea>
-        <div style="margin-top:15px; display:flex; justify-content: space-between;">
-            <button class="tool-btn" id="sendBtn">Отправить</button>
-            <button class="tool-btn" onclick="toggleComments(false)">Закрыть</button>
+        <div class="comm-input-area">
+            <textarea id="commInput" placeholder="Пиши как лев, отвечай как Эмиль..." rows="2"></textarea>
+            <div class="comm-btns">
+                <button class="btn-send" id="sendBtn">ОТПРАВИТЬ</button>
+                <button class="btn-close" onclick="toggleComments(false)">ЗАКРЫТЬ</button>
+            </div>
         </div>
     </div>
 </div>
@@ -168,12 +171,12 @@
   const db = getDatabase(app);
   let currentTopic = 'global';
 
-  const getMyMsgs = () => JSON.parse(localStorage.getItem('emil_msgs_v1') || '[]');
-  const saveMyMsg = (id) => { const m = getMyMsgs(); m.push(id); localStorage.setItem('emil_msgs_v1', JSON.stringify(m)); };
+  const getMyMsgs = () => JSON.parse(localStorage.getItem('emil_v9_msgs') || '[]');
+  const saveMyMsg = (id) => { const m = getMyMsgs(); m.push(id); localStorage.setItem('emil_v9_msgs', JSON.stringify(m)); };
 
   window.openComments = function(topic) {
     currentTopic = topic;
-    document.getElementById('commHeader').innerText = topic === 'global' ? 'Общий чат авантюристов' : `Толкование главы ${topic}`;
+    document.getElementById('commHeaderTitle').innerText = topic === 'global' ? 'Общий чат' : `Глава ${topic}`;
     document.getElementById('comments-modal').style.display = 'block';
     
     onValue(ref(db, 'comments/' + currentTopic), (snap) => {
@@ -186,21 +189,16 @@
                 const isMine = myMsgs.includes(id);
                 list.innerHTML += `
                     <div class="comm-item">
-                        ${isMine ? `<button class="del-btn" onclick="deleteComment('${id}')">УДАЛИТЬ</button>` : ''}
-                        <div style="color:var(--gold); font-weight:bold; font-size:0.7rem;">АНОНИМНЫЙ ШАКАЛ</div>
-                        <div style="margin:5px 0;">${c.text}</div>
-                        <div style="display:flex; gap:5px;">
-                            <button class="react-btn-small" onclick="addReact('${id}', '👍')">👍 ${c.reactions?.['👍'] || 0}</button>
-                            <button class="react-btn-small" onclick="addReact('${id}', '😂')">😂 ${c.reactions?.['😂'] || 0}</button>
-                        </div>
+                        ${isMine ? `<button class="del-btn" onclick="deleteComment('${id}')">удалить</button>` : ''}
+                        <div style="color:var(--gold); font-weight:bold; font-size:0.7rem; margin-bottom:5px;">Анонимный авантюрист</div>
+                        <div style="font-size:0.9rem;">${c.text}</div>
                     </div>`;
             });
         }
     });
   };
 
-  window.addReact = (id, type) => runTransaction(ref(db, `comments/${currentTopic}/${id}/reactions/${type}`), (count) => (count || 0) + 1);
-  window.deleteComment = (id) => { if(confirm('Удалить базар?')) remove(ref(db, `comments/${currentTopic}/${id}`)); };
+  window.deleteComment = (id) => { if(confirm('Удалить?')) remove(ref(db, `comments/${currentTopic}/${id}`)); };
   window.toggleComments = (s) => document.getElementById('comments-modal').style.display = s ? 'block' : 'none';
 
   document.getElementById('sendBtn').onclick = () => {
@@ -209,61 +207,50 @@
     push(ref(db, 'comments/' + currentTopic), { text: input.value, timestamp: serverTimestamp() }).then(res => {
         saveMyMsg(res.key);
         input.value = '';
+        document.getElementById('commList').scrollTop = 0;
     });
-  };
-
-  window.loadChapReacts = (id) => {
-    onValue(ref(db, `chapter_reactions/${id}`), (snapshot) => {
-      const val = snapshot.val() || {};
-      ['🔥', '❤️', '👏'].forEach(emoji => {
-        const el = document.getElementById(`v-${emoji}`);
-        if(el) el.innerText = val[emoji] || 0;
-      });
-    });
-  };
-
-  window.addChapReact = (emoji) => {
-    runTransaction(ref(db, `chapter_reactions/${currentId}/${emoji}`), (count) => (count || 0) + 1);
-    showToast("Твой голос услышан! ✨");
   };
 </script>
 
 <script>
-    const volumesContainer = document.getElementById('volumes-container');
     const reader = document.getElementById('reader');
     const progLine = document.getElementById('progLine');
     let currentId = 1;
-    let victoryTriggered = false;
+
+    const quotes = [
+        "Волк не тот, кто волк, а тот, кто поел и спит.",
+        "Запомни: лучше прийти на 5 минут позже, чем на 50 лет раньше.",
+        "Если тебе плюют в спину — значит ты впереди. Если плюют в лицо — ты накосячил.",
+        "Неважно, кто напротив. Важно, сколько у него в кошельке.",
+        "Жизнь — это как шахматы. Я в них не играю, я продаю доску.",
+        "Если ты упал — вставай. Если не можешь встать — спи, че ты как маленький.",
+        "Моя совесть чиста, потому что я ни разу в жизни её не распаковывал.",
+        "Слабые мстят, сильные прощают. Я просто записываю адрес.",
+        "Никогда не сдавайся. Если за тобой гонятся менты — беги еще быстрее.",
+        "Одна ошибка — и ты ошибся."
+    ];
 
     function getEmilQuote() {
-        const quotes = [
-            "Если тебя бьют — бей в ответ. Если не бьют — найди за что побить и бей.",
-            "Сделал дело — гуляй смело. Не сделал дело — гуляй ещё смелее.",
-            "Лучше быть последним среди шакалов, чем первым среди тех, у кого нет денег.",
-            "Умный человек всегда найдет выход. А мудрый в такую жопу даже не полезет.",
-            "Запомни: если ты упал, значит ты просто проверял, насколько твердый пол.",
-            "Если план 'А' не сработал, в алфавите ещё много букв. Но 'Щ' — самая опасная.",
-            "Не ищи смысл жизни. Ищи, где на этой жизни можно заработать.",
-            "Слабые мстят. Сильные прощают. Счастливые — просто забывают, где закопали тело.",
-            "Жизнь — это очередь за счастьем. Я просто пролез без очереди, потому что мне 'только спросить'.",
-            "Никогда не сдавайся. Если за тобой гонятся — беги быстрее."
-        ];
-        showToast(quotes[Math.floor(Math.random()*quotes.length)]);
+        const q = quotes[Math.floor(Math.random() * quotes.length)];
+        const el = document.getElementById('emil-quote');
+        el.style.opacity = 0;
+        setTimeout(() => {
+            el.innerText = q;
+            el.style.opacity = 1;
+        }, 200);
     }
 
-    function getP(id) { return JSON.parse(localStorage.getItem(`emil_v6_p_${id}`) || '{"perc":0,"pos":0}'); }
-    function setP(id, perc, pos) { localStorage.setItem(`emil_v6_p_${id}`, JSON.stringify({perc, pos})); }
+    function getP(id) { return JSON.parse(localStorage.getItem(`p_v9_${id}`) || '{"perc":0,"pos":0}'); }
+    function setP(id, perc, pos) { localStorage.setItem(`p_v9_${id}`, JSON.stringify({perc, pos})); }
 
     function openChapter(id) {
         currentId = id;
         const ch = bookData.find(c => c.id === id);
         if(!ch) return;
-        victoryTriggered = false;
         document.getElementById('innerNum').innerText = `Глава ${ch.id}`;
         document.getElementById('innerTitle').innerText = ch.title;
         document.getElementById('chapterBody').innerText = ch.content;
         document.getElementById('chapterCommBtn').onclick = () => openComments(id);
-        if(window.loadChapReacts) window.loadChapReacts(id);
         reader.style.display = 'block';
         document.body.style.overflow = 'hidden';
         const saved = getP(id);
@@ -273,18 +260,12 @@
     function onReaderScroll() {
         const scrolled = (reader.scrollTop / (reader.scrollHeight - reader.clientHeight)) * 100;
         progLine.style.width = scrolled + "%";
-        if(scrolled > 99 && !victoryTriggered) {
-            victoryTriggered = true;
-            reader.classList.add('chapter-done-flash');
-            showToast("✨ ГЛАВА ИЗУЧЕНА!");
-            setTimeout(() => reader.classList.remove('chapter-done-flash'), 2000);
-        }
         clearTimeout(window.sTimer);
         window.sTimer = setTimeout(() => setP(currentId, Math.round(scrolled), reader.scrollTop), 300);
     }
 
     function applyTheme(t) {
-        document.getElementById('textContent').className = `book-content fade-anim theme-${t}`;
+        document.getElementById('textContent').className = `book-content theme-${t}`;
         document.getElementById('topBar').style.background = (t === 'paper' ? '#f4f1ea' : (t === 'sepia' ? '#2b2520' : '#0d0d0d'));
     }
 
@@ -295,14 +276,13 @@
     }
 
     function closeBook() { reader.style.display = 'none'; document.body.style.overflow = 'auto'; renderVolumes(); }
-    function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
-
     function nextChapter() { if(currentId < bookData.length) openChapter(currentId + 1); }
     function prevChapter() { if(currentId > 1) openChapter(currentId - 1); }
 
     function renderVolumes() {
-        volumesContainer.innerHTML = '';
-        const vols = [{ t: "Том I: Черти и Шакалы", r: [1, 22] }, { t: "Том II: Как по маслу...", r: [23, 100] }];
+        const cont = document.getElementById('volumes-container');
+        cont.innerHTML = '';
+        const vols = [{ t: "Том I: Черти", r: [1, 22] }, { t: "Том II: Авантюры", r: [23, 100] }];
         vols.forEach(v => {
             const chs = bookData.filter(c => c.id >= v.r[0] && c.id <= v.r[1]);
             if (chs.length > 0) {
@@ -314,21 +294,16 @@
                     const card = document.createElement('div');
                     card.className = `chapter-card ${p.perc >= 98 ? 'completed' : ''}`;
                     card.onclick = () => openChapter(ch.id);
-                    card.innerHTML = `
-                        <div class="prog-circle">
-                            <svg><circle class="circle-bg" cx="18" cy="18" r="16"></circle>
-                            <circle class="circle-fg" cx="18" cy="18" r="16" style="stroke-dashoffset:${100 - p.perc}; ${p.perc >= 98 ? 'stroke:#2ecc71' : ''}"></circle></svg>
-                        </div>
-                        <h3 style="margin:0; font-size:0.9rem;">Глава ${ch.id}</h3>
-                        <p style="opacity:0.5; font-size:0.6rem; margin-top:5px;">${ch.title}</p>
-                    `;
+                    card.innerHTML = `<h3 style="margin:0; font-size:0.85rem;">Глава ${ch.id}</h3><div style="font-size:0.6rem; opacity:0.5; margin-top:5px;">${p.perc}%</div>`;
                     grid.appendChild(card);
                 });
-                volumesContainer.appendChild(sec);
+                cont.appendChild(sec);
             }
         });
     }
+
     renderVolumes();
+    getEmilQuote(); // Первая цитата при загрузке
 </script>
 </body>
 </html>
