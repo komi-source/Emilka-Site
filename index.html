@@ -10,117 +10,96 @@
             --gold: #c6a667;
             --bg: #080808;
             --card-bg: #121212;
-            --t-speed: 0.6s;
+            --reader-bg: #0d0d0d;
         }
 
         body { 
-            background-color: var(--bg); 
-            color: #e0e0e0; 
-            font-family: 'Lora', serif; 
-            margin: 0; 
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
+            background-color: var(--bg); color: #e0e0e0; font-family: 'Lora', serif; 
+            margin: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent;
         }
 
-        /* Эффект Золотого Сияния */
-        @keyframes gold-glow {
-            0% { box-shadow: inset 0 0 0 transparent; }
-            50% { box-shadow: inset 0 0 60px var(--gold); }
-            100% { box-shadow: inset 0 0 0 transparent; }
-        }
-        .chapter-finished { animation: gold-glow 2s ease-in-out; }
-
+        /* Прогресс-бар сверху */
         .progress-line { 
-            position: fixed; top: 0; left: 0; height: 4px; 
-            background: linear-gradient(90deg, var(--gold), #fff); 
-            width: 0%; z-index: 3000; transition: width 0.2s; 
+            position: fixed; top: 0; left: 0; height: 3px; 
+            background: var(--gold); width: 0%; z-index: 10000; transition: width 0.2s; 
         }
 
-        /* Главный экран */
+        /* Главный экран (Главное меню) */
+        #main-ui { position: relative; width: 100%; min-height: 100vh; z-index: 10; }
+        
         .hero { 
-            height: 45vh; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; text-align: center;
-            background: radial-gradient(circle at center, #1a1a1a 0%, #080808 100%);
+            height: 40vh; display: flex; flex-direction: column; justify-content: center; 
+            align-items: center; text-align: center; padding: 20px;
         }
-        .hero-title { 
-            font-family: 'Playfair Display', serif; font-size: 2rem; 
-            color: var(--gold); text-transform: uppercase; letter-spacing: 5px; 
-            margin: 0; padding: 0 20px;
-        }
+        .hero-title { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 2.2rem; letter-spacing: 4px; text-transform: uppercase; margin: 0; }
 
-        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
-        .chapters-grid { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
-            gap: 15px; margin-top: 30px;
-        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px 20px 100px; }
+        .chapters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
 
         .chapter-card {
             background: var(--card-bg); border: 1px solid #222; border-radius: 16px;
-            padding: 20px; cursor: pointer; transition: 0.3s;
-            display: flex; flex-direction: column; align-items: center;
+            padding: 20px; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: 0.3s;
         }
-        .chapter-card:active { transform: scale(0.95); }
+        .chapter-card:active { transform: scale(0.98); }
         .chapter-card.completed { border-color: #2ecc71; }
 
-        /* Кольцо прогресса */
-        .prog-svg { width: 54px; height: 54px; transform: rotate(-90deg); margin-bottom: 10px; }
+        /* Кольцо прогресса на карточке */
+        .prog-svg { width: 48px; height: 48px; transform: rotate(-90deg); margin-bottom: 8px; }
         .prog-bg { fill: none; stroke: #222; stroke-width: 4; }
-        .prog-fg { 
-            fill: none; stroke: var(--gold); stroke-width: 4; 
-            stroke-linecap: round; transition: stroke-dashoffset 0.8s ease; 
-        }
+        .prog-fg { fill: none; stroke: var(--gold); stroke-width: 4; stroke-linecap: round; transition: 0.5s; }
 
-        /* Читалка */
+        /* --- ЧИТАЛКА (READER) --- */
         #reader { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            z-index: 2500; overflow-y: auto; 
-            transition: background var(--t-speed), color var(--t-speed);
+            z-index: 9000; overflow-y: auto; overflow-x: hidden;
+            background-color: var(--reader-bg); 
+            transition: background 0.4s ease;
         }
-        
+
         .toolbar { 
             position: sticky; top: 0; display: flex; justify-content: space-between; 
-            align-items: center; padding: 12px 15px; z-index: 2600;
-            transition: background var(--t-speed);
+            align-items: center; padding: 12px 15px; z-index: 9500;
+            background: inherit; border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
         .book-content { 
-            max-width: 700px; margin: 0 auto; padding: 40px 20px 120px; 
-            line-height: 1.8; font-size: 1.25rem; 
-            transition: color var(--t-speed);
+            max-width: 650px; margin: 0 auto; padding: 40px 20px 50px; 
+            line-height: 1.8; font-size: 1.25rem; min-height: 80vh;
+            transition: color 0.4s ease;
         }
+
+        .tool-btn { 
+            background: rgba(255,255,255,0.05); border: 1.5px solid var(--gold); 
+            color: var(--gold); padding: 8px 12px; font-size: 0.75rem; 
+            border-radius: 10px; font-family: 'Montserrat'; font-weight: bold;
+        }
+
+        .btn-group { display: flex; gap: 8px; }
 
         /* Темы */
         .theme-paper { background-color: #f4f1ea !important; color: #1a1a1a !important; }
         .theme-dark { background-color: #0d0d0d !important; color: #d1d1d1 !important; }
-        .bar-paper { background: rgba(244, 241, 234, 0.9) !important; border-bottom: 1px solid #ddd; }
-        .bar-dark { background: rgba(13, 13, 13, 0.9) !important; border-bottom: 1px solid #333; }
 
-        /* Кнопки */
-        .tool-btn { 
-            background: rgba(255,255,255,0.05); border: 1.5px solid var(--gold); 
-            color: var(--gold); padding: 8px 14px; font-size: 0.75rem; 
-            border-radius: 10px; font-family: 'Montserrat'; font-weight: 600;
-            text-transform: uppercase;
-        }
-        .btn-group { display: flex; gap: 8px; }
-
-        /* Навигация в конце */
+        /* Футер читалки */
         .nav-footer { 
-            display: flex; flex-direction: column; align-items: center; 
-            gap: 25px; padding-bottom: 60px; 
+            max-width: 650px; margin: 0 auto; padding: 0 20px 100px; 
+            display: flex; flex-direction: column; align-items: center; gap: 20px;
+            background: inherit;
         }
-        #chapterCommBtn.pulse { animation: pulse-gold 2s infinite; }
-        @keyframes pulse-gold {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(198, 166, 103, 0.4); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(198, 166, 103, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(198, 166, 103, 0); }
+
+        /* Анимация золотого сияния */
+        @keyframes gold-victory {
+            0% { box-shadow: inset 0 0 0 transparent; }
+            50% { box-shadow: inset 0 0 100px rgba(198, 166, 103, 0.5); }
+            100% { box-shadow: inset 0 0 0 transparent; }
         }
+        .victory-flash { animation: gold-victory 2s ease-out; }
 
         #toast { 
             position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); 
-            background: var(--gold); color: #000; padding: 12px 24px; 
-            border-radius: 50px; font-size: 0.85rem; display: none; z-index: 5000;
-            font-weight: bold; box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            background: var(--gold); color: #000; padding: 12px 28px; 
+            border-radius: 50px; font-size: 0.85rem; display: none; z-index: 11000;
+            font-weight: bold; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
         }
     </style>
 </head>
@@ -129,42 +108,41 @@
 <div id="toast"></div>
 <div class="progress-line" id="progLine"></div>
 
-<div class="hero">
-    <div class="hero-title">Эмиль Гиенович</div>
-    <div style="margin-top: 20px; display: flex; gap: 10px;">
-        <button class="tool-btn" onclick="openComments('global')">💬 Чат</button>
-        <button class="tool-btn" onclick="getEmilAdvice()">🔮 Совет</button>
+<div id="main-ui">
+    <div class="hero">
+        <h1 class="hero-title">Эмиль Гиенович</h1>
+        <div style="margin-top: 20px; display: flex; gap: 10px;">
+            <button class="tool-btn" onclick="openComments('global')">💬 ЧАТ</button>
+            <button class="tool-btn" onclick="getEmilAdvice()">🔮 СОВЕТ</button>
+        </div>
     </div>
+    <div class="container" id="volumes-container"></div>
 </div>
 
-<div class="container" id="volumes-container"></div>
-
 <div id="reader" onscroll="handleReaderScroll()">
-    <div class="toolbar bar-dark" id="mainBar">
-        <button class="tool-btn" onclick="closeBook()">← Меню</button>
+    <div class="toolbar" id="readerBar">
+        <button class="tool-btn" onclick="closeBook()">← МЕНЮ</button>
         <div class="btn-group">
-            <button class="tool-btn" onclick="setTheme('paper')">📜</button>
-            <button class="tool-btn" onclick="setTheme('dark')">🌘</button>
-            <button class="tool-btn" onclick="changeSize(2)">A+</button>
+            <button class="tool-btn" onclick="changeFontSize(-2)">A-</button>
+            <button class="tool-btn" onclick="changeFontSize(2)">A+</button>
+            <button class="tool-btn" onclick="setReaderTheme('paper')">📜</button>
+            <button class="tool-btn" onclick="setReaderTheme('dark')">🌘</button>
         </div>
     </div>
 
-    <div class="book-content theme-dark" id="mainText">
+    <div class="book-content theme-dark" id="bookText">
         <div style="text-align: center; margin-bottom: 40px;">
-            <div style="font-size: 0.8rem; color: var(--gold); letter-spacing: 2px; margin-bottom: 10px;">
-                МОЖНО ОБСУДИТЬ В КОНЦЕ ✨
-            </div>
-            <h1 id="hNum" style="font-family: 'Playfair Display'; margin: 0; font-size: 2.2rem;"></h1>
-            <p id="hTitle" style="font-style: italic; opacity: 0.5; margin-top: 10px;"></p>
+            <h1 id="chapterNum" style="font-family: 'Playfair Display'; margin: 0; color: var(--gold); font-size: 2.2rem;"></h1>
+            <p id="chapterTitle" style="font-style: italic; opacity: 0.6; margin-top: 10px;"></p>
         </div>
-        <div id="hBody"></div>
+        <div id="chapterBodyContent"></div>
     </div>
 
     <div class="nav-footer">
-        <button class="tool-btn" style="padding: 16px 40px;" id="chapterCommBtn">💬 ОБСУДИТЬ ГЛАВУ</button>
-        <div style="display: flex; gap: 20px;">
-            <button class="tool-btn" id="pBtn" onclick="prevChapter()">← Назад</button>
-            <button class="tool-btn" id="nBtn" onclick="nextChapter()">Вперед →</button>
+        <button class="tool-btn" style="padding: 18px 40px; width: 100%; font-size: 1rem;" id="commBtn">💬 ОБСУДИТЬ ГЛАВУ</button>
+        <div style="display: flex; gap: 15px; width: 100%;">
+            <button class="tool-btn" style="flex: 1;" onclick="prevChapter()">← НАЗАД</button>
+            <button class="tool-btn" style="flex: 1;" onclick="nextChapter()">ВПЕРЕД →</button>
         </div>
     </div>
 </div>
@@ -172,138 +150,148 @@
 <script src="chapters.js"></script>
 
 <script>
-    const reader = document.getElementById('reader');
+    const readerEl = document.getElementById('reader');
     const progLine = document.getElementById('progLine');
     let currentId = 1;
-    let isFinished = false;
+    let finishTriggered = false;
 
-    // Работа с прогрессом
-    const getProg = (id) => JSON.parse(localStorage.getItem(`emil_p_${id}`) || '{"perc":0,"pos":0}');
-    const setProg = (id, perc, pos) => localStorage.setItem(`emil_p_${id}`, JSON.stringify({perc, pos}));
+    // Локальное хранилище прогресса
+    const saveProg = (id, perc, pos) => localStorage.setItem(`emil_v4_prog_${id}`, JSON.stringify({perc, pos}));
+    const loadProg = (id) => JSON.parse(localStorage.getItem(`emil_v4_prog_${id}`) || '{"perc":0,"pos":0}');
 
     function handleReaderScroll() {
-        const scrolled = (reader.scrollTop / (reader.scrollHeight - reader.clientHeight)) * 100;
+        const scrolled = (readerEl.scrollTop / (readerEl.scrollHeight - readerEl.clientHeight)) * 100;
         progLine.style.width = scrolled + "%";
 
-        // Эффект завершения
-        if (scrolled > 98 && !isFinished) {
-            isFinished = true;
-            reader.classList.add('chapter-finished');
-            document.getElementById('chapterCommBtn').classList.add('pulse');
-            showToast("✨ Глава завершена!");
-            setTimeout(() => reader.classList.remove('chapter-finished'), 2000);
+        // Золотая анимация в конце
+        if (scrolled > 99 && !finishTriggered) {
+            finishTriggered = true;
+            readerEl.classList.add('victory-flash');
+            showToast("✨ Глава изучена до конца!");
+            setTimeout(() => readerEl.classList.remove('victory-flash'), 2000);
         }
 
-        clearTimeout(window.scrollDebounce);
-        window.scrollDebounce = setTimeout(() => {
-            setProg(currentId, Math.round(scrolled), reader.scrollTop);
-        }, 200);
+        // Сохраняем позицию
+        clearTimeout(window.scrollSaveTimer);
+        window.scrollSaveTimer = setTimeout(() => {
+            saveProg(currentId, Math.round(scrolled), readerEl.scrollTop);
+        }, 300);
     }
 
     function openChapter(id) {
         currentId = id;
-        const ch = bookData.find(c => c.id === id);
-        if(!ch) return;
+        const chapter = bookData.find(c => c.id === id);
+        if(!chapter) return;
 
-        isFinished = false;
-        document.getElementById('chapterCommBtn').classList.remove('pulse');
-        document.getElementById('hNum').innerText = `Глава ${ch.id}`;
-        document.getElementById('hTitle').innerText = ch.title;
-        document.getElementById('hBody').innerText = ch.content;
-        document.getElementById('chapterCommBtn').onclick = () => openComments(id);
+        finishTriggered = false;
+        document.getElementById('chapterNum').innerText = `Глава ${chapter.id}`;
+        document.getElementById('chapterTitle').innerText = chapter.title;
+        document.getElementById('chapterBodyContent').innerText = chapter.content;
+        
+        // Кнопка комментариев для конкретной главы
+        document.getElementById('commBtn').onclick = () => {
+            if(window.openComments) window.openComments(id);
+        };
 
-        reader.style.display = 'block';
+        readerEl.style.display = 'block';
         document.body.style.overflow = 'hidden';
         
-        const saved = getProg(id);
-        setTimeout(() => { reader.scrollTop = saved.pos; }, 60);
-        updateNav();
+        const saved = loadProg(id);
+        setTimeout(() => { readerEl.scrollTop = saved.pos; }, 50);
     }
 
-    function setTheme(t) {
-        const text = document.getElementById('mainText');
-        const bar = document.getElementById('mainBar');
+    function setReaderTheme(t) {
+        const textContainer = document.getElementById('bookText');
         if(t === 'paper') {
-            text.className = 'book-content theme-paper';
-            bar.className = 'toolbar bar-paper';
+            textContainer.className = 'book-content theme-paper';
+            readerEl.style.backgroundColor = '#f4f1ea';
         } else {
-            text.className = 'book-content theme-dark';
-            bar.className = 'toolbar bar-dark';
+            textContainer.className = 'book-content theme-dark';
+            readerEl.style.backgroundColor = '#0d0d0d';
         }
     }
 
-    function changeSize(d) {
-        const t = document.getElementById('mainText');
-        const s = parseFloat(window.getComputedStyle(t).fontSize);
-        t.style.fontSize = (s > 30 && d > 0) ? '32px' : (s + d) + 'px';
+    function changeFontSize(delta) {
+        const el = document.getElementById('bookText');
+        const style = window.getComputedStyle(el, null).getPropertyValue('font-size');
+        const currentSize = parseFloat(style);
+        if ((currentSize + delta) > 12 && (currentSize + delta) < 40) {
+            el.style.fontSize = (currentSize + delta) + 'px';
+        }
     }
 
     function closeBook() {
-        reader.style.display = 'none';
+        readerEl.style.display = 'none';
         document.body.style.overflow = 'auto';
-        renderVolumes();
-    }
-
-    function updateNav() {
-        document.getElementById('pBtn').style.opacity = currentId > 1 ? '1' : '0.3';
-        document.getElementById('nBtn').style.opacity = currentId < bookData.length ? '1' : '0.3';
+        renderVolumes(); // Обновляем прогресс на главной
     }
 
     function nextChapter() { if(currentId < bookData.length) openChapter(currentId + 1); }
     function prevChapter() { if(currentId > 1) openChapter(currentId - 1); }
 
-    function showToast(m) {
+    function showToast(msg) {
         const t = document.getElementById('toast');
-        t.innerText = m; t.style.display = 'block';
+        t.innerText = msg; t.style.display = 'block';
         setTimeout(() => t.style.display = 'none', 3000);
     }
 
     function getEmilAdvice() {
-        const a = ["Авантюра — это план, который еще не провалился.", "Шакалы боятся тишины.", "Деньги любят тишину, а я люблю деньги."];
-        showToast(a[Math.floor(Math.random()*a.length)]);
+        const advices = [
+            "Если тебя поймали — притворись, что ты это и планировал.",
+            "Шакалы лают на луну, а Эмиль забирает луну себе.",
+            "Деньги — это просто способ доказать, что ты прав."
+        ];
+        showToast(advices[Math.floor(Math.random()*advices.length)]);
     }
 
     function renderVolumes() {
-        const cont = document.getElementById('volumes-container');
-        cont.innerHTML = '';
+        const container = document.getElementById('volumes-container');
+        container.innerHTML = '';
         
-        const vols = [{n: "Том I", r: [1, 22]}, {n: "Том II", r: [23, 100]}];
-        
-        vols.forEach(v => {
-            const chs = bookData.filter(c => c.id >= v.r[0] && c.id <= v.r[1]);
-            if(chs.length === 0) return;
+        const volumes = [
+            { name: "Том I: Начало", range: [1, 22] },
+            { name: "Том II: Авантюры", range: [23, 100] }
+        ];
 
-            const div = document.createElement('div');
-            div.innerHTML = `<div style="display:flex; align-items:center; gap:15px; margin:40px 0 20px;">
-                <h2 style="color:var(--gold); font-family:'Playfair Display'; margin:0; font-size:1.2rem; text-transform:uppercase;">${v.n}</h2>
-                <div style="flex-grow:1; height:1px; background:linear-gradient(90deg, var(--gold), transparent);"></div>
-            </div><div class="chapters-grid"></div>`;
+        volumes.forEach(v => {
+            const chaptersInVol = bookData.filter(c => c.id >= v.range[0] && c.id <= v.range[1]);
+            if(chaptersInVol.length === 0) return;
+
+            const volEl = document.createElement('div');
+            volEl.innerHTML = `
+                <div style="display:flex; align-items:center; gap:10px; margin:40px 0 20px;">
+                    <h2 style="color:var(--gold); font-size:1.1rem; margin:0; text-transform:uppercase;">${v.name}</h2>
+                    <div style="flex:1; height:1px; background:linear-gradient(90deg, var(--gold), transparent);"></div>
+                </div>
+                <div class="chapters-grid"></div>
+            `;
             
-            const grid = div.querySelector('.chapters-grid');
-            chs.forEach(ch => {
-                const p = getProg(ch.id);
-                const done = p.perc >= 98;
-                const offset = 150.7 - (150.7 * (p.perc / 100)); // 2*PI*24
+            const grid = volEl.querySelector('.chapters-grid');
+            chaptersInVol.forEach(ch => {
+                const prog = loadProg(ch.id);
+                const isCompleted = prog.perc >= 98;
+                const strokeOffset = 125.6 - (125.6 * (prog.perc / 100)); // r=20
 
                 const card = document.createElement('div');
-                card.className = `chapter-card ${done ? 'completed' : ''}`;
+                card.className = `chapter-card ${isCompleted ? 'completed' : ''}`;
                 card.onclick = () => openChapter(ch.id);
                 card.innerHTML = `
                     <svg class="prog-svg">
-                        <circle class="prog-bg" cx="27" cy="27" r="24"></circle>
-                        <circle class="prog-fg" cx="27" cy="27" r="24" style="stroke-dashoffset:${offset}; stroke-dasharray:150.7; ${done ? 'stroke:#2ecc71' : ''}"></circle>
+                        <circle class="prog-bg" cx="24" cy="24" r="20"></circle>
+                        <circle class="prog-fg" cx="24" cy="24" r="20" style="stroke-dashoffset:${strokeOffset}; stroke-dasharray:125.6; ${isCompleted ? 'stroke:#2ecc71' : ''}"></circle>
                     </svg>
                     <div style="font-weight:bold; font-size:0.9rem;">Глава ${ch.id}</div>
-                    <div style="font-size:0.6rem; opacity:0.5; margin-top:4px;">${done ? 'ПРОЧИТАНО' : p.perc + '%'}</div>
+                    <div style="font-size:0.6rem; opacity:0.5; margin-top:4px;">${isCompleted ? 'ЗАВЕРШЕНО' : prog.perc + '%'}</div>
                 `;
                 grid.appendChild(card);
             });
-            cont.appendChild(div);
+            container.appendChild(volEl);
         });
     }
 
+    // Первичная отрисовка
     renderVolumes();
-    // Логика комментариев (openComments) подхватится из твоего Firebase-блока.
 </script>
+
 </body>
 </html>
