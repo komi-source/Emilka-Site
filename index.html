@@ -348,7 +348,7 @@
     function renderVolumes() {
         const cont = document.getElementById('volumes-container');
         cont.innerHTML = '';
-        const vols = [{ t: "Том I: Черти", r: [1, 22] }, { t: "Том II: Авантюры", r: [23, 100] }];
+        const vols = [{ t: "Том I: Черти и Шакалы", r: [1, 22] }, { t: "Том II: Как по маслу но без смазки", r: [23, 100] }];
         vols.forEach(v => {
             const chs = bookData.filter(c => c.id >= v.r[0] && c.id <= v.r[1]);
             if (chs.length > 0) {
@@ -373,4 +373,5 @@
 </script>
 </body>
 </html>
+
 
