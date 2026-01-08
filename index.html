@@ -71,6 +71,8 @@
         .tool-btn { background: #1a1a1a; border: 1.5px solid var(--gold); color: var(--gold); padding: 8px 12px; cursor: pointer; font-size: 0.7rem; font-family: 'Montserrat'; text-transform: uppercase; border-radius: 8px; font-weight: 800; transition: 0.2s; }
         .tool-btn:active { background: var(--gold); color: #000; }
 
+        .btn-download { background: var(--gold) !important; color: #000 !important; border: none !important; margin-top: 10px; padding: 10px 15px !important; }
+
         /* Темы */
         .theme-paper { background-color: #f4f1ea !important; color: #1a1a1a !important; }
         .theme-dark { background-color: #0d0d0d !important; color: #d1d1d1 !important; }
@@ -142,7 +144,11 @@
             <p id="innerTitle" style="font-style: italic; opacity: 0.6; margin-top: 5px;"></p>
         </div>
 
-        <div class="reader-hint">Напоминание: обсудить и оценить этот шедевр можно в самом конце главы ✨</div>
+        <div class="reader-hint">
+            Напоминание: обсудить и оценить этот шедевр можно в самом конце главы ✨
+            <br>
+            <button class="tool-btn btn-download" onclick="downloadChapter()">📥 СКАЧАТЬ ЭТУ ГЛАВУ (.txt)</button>
+        </div>
 
         <div id="chapterBody"></div>
         
@@ -240,7 +246,6 @@
     });
   };
 
-  // Реакции для глав
   window.loadChapReacts = (id) => {
     onValue(ref(db, `chap_reacts/${id}`), (snap) => {
         const val = snap.val() || {};
@@ -289,8 +294,6 @@
         "Если тебе где-то не рады в рваных носках, то и в целых туда идти не стоит.",
         "Если закрыть глаза, становится темно.",
         "Кто рано встает — тому весь день спать хочется."
-        
-        
     ];
 
     function getEmilQuote() {
@@ -318,6 +321,26 @@
         document.body.style.overflow = 'hidden';
         const saved = getP(id);
         setTimeout(() => { reader.scrollTop = saved.pos; }, 50);
+    }
+
+    // НОВАЯ ФУНКЦИЯ: СКАЧИВАНИЕ
+    function downloadChapter() {
+        const ch = bookData.find(c => c.id === currentId);
+        if(!ch) return;
+
+        const fileName = `Emil_Glava_${ch.id}.txt`;
+        // Очищаем текст от HTML-тегов, если они есть
+        const cleanContent = ch.content.replace(/<[^>]*>/g, '').trim();
+        
+        const fileText = `ПРИЧУДЛИВЫЕ АВАНТЮРЫ ЭМИЛЯ ГИЕНОВИЧА\n\nГлава ${ch.id}: ${ch.title}\n${"=".repeat(30)}\n\n${cleanContent}\n\n${"=".repeat(30)}\nКонец главы.`;
+
+        const blob = new Blob([fileText], { type: 'text/plain;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        link.click();
+        URL.revokeObjectURL(link.href);
+        showToast("Глава сохранена для оффлайн чтения! 📂");
     }
 
     function onReaderScroll() {
@@ -373,5 +396,3 @@
 </script>
 </body>
 </html>
-
-
