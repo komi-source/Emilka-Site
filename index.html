@@ -19,13 +19,9 @@
         .progress-line { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0%; z-index: 10000; transition: width 0.3s; }
 
         /* Герой и Цитатник */
-        .hero { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; background: radial-gradient(circle at center, #1a1a1a 0%, #080808 100%); border-bottom: 1px solid #222; }
-        .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem, 5vw, 1.8rem); color: var(--gold); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 5px; }
-        .hero-subtitle { font-size: 0.7rem; letter-spacing: 2px; opacity: 0.5; margin-bottom: 15px; }
-
-        /* ПРОФИЛЬ ГЕЙМИФИКАЦИИ */
-        .user-stats { background: rgba(198, 166, 103, 0.1); border: 1px solid rgba(198, 166, 103, 0.3); padding: 10px 20px; border-radius: 50px; margin-bottom: 20px; font-family: 'Montserrat'; font-size: 0.7rem; display: flex; gap: 15px; color: var(--gold); font-weight: bold; }
-        .rank-tag { color: #fff; text-transform: uppercase; }
+        .hero { min-height: 55vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; background: radial-gradient(circle at center, #1a1a1a 0%, #080808 100%); border-bottom: 1px solid #222; }
+        .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(1.2rem, 5vw, 1.8rem); color: var(--gold); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 5px; padding: 0 10px; }
+        .hero-subtitle { font-size: 0.7rem; letter-spacing: 2px; opacity: 0.5; margin-bottom: 25px; }
 
         .quote-box {
             background: linear-gradient(145deg, #161616, #0d0d0d);
@@ -57,6 +53,7 @@
 
         .chapters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
         .chapter-card { background: var(--card-bg); border: 1px solid #222; border-radius: 12px; padding: 15px; cursor: pointer; text-align: center; transition: 0.2s; }
+        .chapter-card:active { transform: scale(0.95); }
         .chapter-card.completed { border-color: #2ecc71; box-shadow: inset 0 0 10px rgba(46, 204, 113, 0.1); }
 
         /* ЧИТАЛКА */
@@ -71,7 +68,8 @@
         
         .reader-hint { background: rgba(198, 166, 103, 0.1); border: 1px dashed var(--gold); padding: 12px; border-radius: 10px; font-size: 0.8rem; text-align: center; margin-bottom: 30px; color: var(--gold); font-style: italic; }
 
-        .tool-btn { background: #1a1a1a; border: 1.5px solid var(--gold); color: var(--gold); padding: 8px 12px; cursor: pointer; font-size: 0.7rem; font-family: 'Montserrat'; text-transform: uppercase; border-radius: 8px; font-weight: 800; }
+        .tool-btn { background: #1a1a1a; border: 1.5px solid var(--gold); color: var(--gold); padding: 8px 12px; cursor: pointer; font-size: 0.7rem; font-family: 'Montserrat'; text-transform: uppercase; border-radius: 8px; font-weight: 800; transition: 0.2s; }
+        .tool-btn:active { background: var(--gold); color: #000; }
 
         /* Темы */
         .theme-paper { background-color: #f4f1ea !important; color: #1a1a1a !important; }
@@ -108,16 +106,10 @@
 
 <div id="main-ui">
     <div class="hero">
-        <div class="hero-title">ПРИЧУДЛИВЫЕ АВАНТЮРЫ ЭМИЛЯ ГИЕНОВИЧА</div>
-        <div class="hero-subtitle">АРХИВ ЭМИЛЯ СТЭТХЭМА</div>
+        <div class="hero-title">ПРИЧУДЛИВЫЕ АВАНТЮРЫ ГОСПОДИНА ЭМИЛЯ ГИЕНОВИЧА</div>
+        <div class="hero-subtitle">ЭМИЛЬ СТЭТХЭМ</div>
         
-        <div class="user-stats">
-            <div>УРОВЕНЬ: <span id="u-level">1</span></div>
-            <div>ОПЫТ: <span id="u-xp">0</span></div>
-            <div class="rank-tag" id="u-rank">Зевака</div>
-        </div>
-
-        <div class="quote-box" onclick="handleQuoteClick()">
+        <div class="quote-box" onclick="getEmilQuote()">
             <div id="emil-quote">Загрузка мудрости...</div>
             <div class="quote-hint"><span>👆</span> Нажми на окно, чтобы сгенерить базу</div>
         </div>
@@ -149,7 +141,9 @@
             <h1 id="innerNum" style="color:var(--gold); font-family: 'Playfair Display'; margin:0; font-size: 2rem;"></h1>
             <p id="innerTitle" style="font-style: italic; opacity: 0.6; margin-top: 5px;"></p>
         </div>
+
         <div class="reader-hint">Напоминание: обсудить и оценить этот шедевр можно в самом конце главы ✨</div>
+
         <div id="chapterBody"></div>
         
         <div style="margin-top: 60px; display: flex; flex-direction: column; align-items: center; gap: 20px; border-top: 1px double var(--gold); padding-top: 40px;">
@@ -202,6 +196,9 @@
   const db = getDatabase(app);
   let currentTopic = 'global';
 
+  const getMyMsgs = () => JSON.parse(localStorage.getItem('emil_v11_msgs') || '[]');
+  const saveMyMsg = (id) => { const m = getMyMsgs(); m.push(id); localStorage.setItem('emil_v11_msgs', JSON.stringify(m)); };
+
   window.openComments = function(topic) {
     currentTopic = topic;
     document.getElementById('commHeaderTitle').innerText = topic === 'global' ? 'ОБЩИЙ ЧАТ' : `ГЛАВА ${topic}`;
@@ -211,16 +208,14 @@
         const list = document.getElementById('commList');
         list.innerHTML = '';
         const data = snap.val();
-        const myMsgs = JSON.parse(localStorage.getItem('emil_v11_msgs') || '[]');
-        const userRank = document.getElementById('u-rank').innerText;
-
+        const myMsgs = getMyMsgs();
         if(data) {
             Object.entries(data).reverse().forEach(([id, c]) => {
                 const isMine = myMsgs.includes(id);
                 list.innerHTML += `
                     <div class="comm-item">
                         ${isMine ? `<button class="del-btn" onclick="deleteComment('${id}')">УДАЛИТЬ</button>` : ''}
-                        <div style="color:var(--gold); font-weight:800; font-size:0.7rem; margin-bottom:8px;">[${c.rank || 'Авантюрист'}] АНОНИМ</div>
+                        <div style="color:var(--gold); font-weight:800; font-size:0.7rem; margin-bottom:8px; font-family:'Montserrat';">АНОНИМНЫЙ ШАКАЛ</div>
                         <div style="font-size:0.95rem; line-height:1.4;">${c.text}</div>
                         <div class="react-bar">
                             <button class="react-btn" onclick="addMsgReact('${id}', '👍')">👍 ${c.reactions?.['👍'] || 0}</button>
@@ -239,17 +234,13 @@
   document.getElementById('sendBtn').onclick = () => {
     const input = document.getElementById('commInput');
     if(!input.value.trim()) return;
-    const rank = document.getElementById('u-rank').innerText;
-    push(ref(db, 'comments/' + currentTopic), { text: input.value, rank: rank, timestamp: serverTimestamp() }).then(res => {
-        const m = JSON.parse(localStorage.getItem('emil_v11_msgs') || '[]');
-        m.push(res.key);
-        localStorage.setItem('emil_v11_msgs', JSON.stringify(m));
+    push(ref(db, 'comments/' + currentTopic), { text: input.value, timestamp: serverTimestamp() }).then(res => {
+        saveMyMsg(res.key);
         input.value = '';
-        window.addXP(5);
-        window.checkAchievement('сплетник');
     });
   };
 
+  // Реакции для глав
   window.loadChapReacts = (id) => {
     onValue(ref(db, `chap_reacts/${id}`), (snap) => {
         const val = snap.val() || {};
@@ -261,66 +252,18 @@
   };
 
   window.addChapReact = (emoji) => {
-    runTransaction(ref(db, `chap_reacts/${window.currentId}/${emoji}`), (c) => (c || 0) + 1);
-    window.showToast("Твой голос принят! ✨");
+    runTransaction(ref(db, `chap_reacts/${currentId}/${emoji}`), (c) => (c || 0) + 1);
+    showToast("Твой голос принят! ✨");
   };
 </script>
 
 <script>
-    // --- ГЕЙМИФИКАЦИЯ ---
-    let stats = JSON.parse(localStorage.getItem('emil_stats') || '{"xp":0, "lvl":1, "clicks":0, "achievements":[]}');
-
-    window.addXP = function(amount) {
-        stats.xp += amount;
-        if(stats.xp >= stats.lvl * 100) {
-            stats.lvl++;
-            showToast(`УРОВЕНЬ ПОВЫШЕН: ${stats.lvl}! 🏆`);
-        }
-        saveStats();
-    };
-
-    function saveStats() {
-        localStorage.setItem('emil_stats', JSON.stringify(stats));
-        updateStatsUI();
-    }
-
-    function updateStatsUI() {
-        document.getElementById('u-level').innerText = stats.lvl;
-        document.getElementById('u-xp').innerText = stats.xp;
-        const ranks = ["Зевака", "Аферист", "Шакал", "Правая рука", "Легенда"];
-        const rIndex = Math.min(Math.floor(stats.lvl / 3), ranks.length - 1);
-        document.getElementById('u-rank').innerText = ranks[rIndex];
-    }
-
-    window.checkAchievement = function(id) {
-        if(stats.achievements.includes(id)) return;
-        let met = false;
-        if(id === 'мудрец' && stats.clicks >= 30) met = true;
-        if(id === 'книжник') met = true;
-        if(id === 'сплетник') met = true;
-
-        if(met) {
-            stats.achievements.push(id);
-            showToast(`АЧИВКА: ${id.toUpperCase()}! ⭐`);
-            addXP(50);
-            saveStats();
-        }
-    };
-
-    function handleQuoteClick() {
-        stats.clicks++;
-        getEmilQuote();
-        addXP(1);
-        checkAchievement('мудрец');
-        saveStats();
-    }
-
-    // --- БАЗОВЫЙ ФУНКЦИОНАЛ ---
     const reader = document.getElementById('reader');
     const progLine = document.getElementById('progLine');
-    window.currentId = 1;
+    let currentId = 1;
 
-    const quotes = ["Волк не тот, кто волк...", "Запомни: лучше позже на 5 мин...", "Если плюют в спину — ты впереди.", "Жизнь — это шахматы. Продаю доску.", "Одна ошибка — и ты ошибся.", "Волк не тот, кто волк, а тот, кто поел и спит.",
+    const quotes = [
+        "Волк не тот, кто волк, а тот, кто поел и спит.",
         "Запомни: лучше прийти на 5 минут позже, чем на 50 лет раньше.",
         "Если тебе плюют в спину — значит ты впереди.",
         "Неважно, кто напротив. Важно, сколько у него в кошельке.",
@@ -345,7 +288,10 @@
         "Слово — не воробей. Вообще ничто не воробей, кроме самого воробья.",
         "Если тебе где-то не рады в рваных носках, то и в целых туда идти не стоит.",
         "Если закрыть глаза, становится темно.",
-        "Кто рано встает — тому весь день спать хочется."];
+        "Кто рано встает — тому весь день спать хочется."
+        
+        
+    ];
 
     function getEmilQuote() {
         const el = document.getElementById('emil-quote');
@@ -356,8 +302,11 @@
         }, 200);
     }
 
+    function getP(id) { return JSON.parse(localStorage.getItem(`p_v11_${id}`) || '{"perc":0,"pos":0}'); }
+    function setP(id, perc, pos) { localStorage.setItem(`p_v11_${id}`, JSON.stringify({perc, pos})); }
+
     function openChapter(id) {
-        window.currentId = id;
+        currentId = id;
         const ch = bookData.find(c => c.id === id);
         if(!ch) return;
         document.getElementById('innerNum').innerText = `Глава ${ch.id}`;
@@ -367,22 +316,22 @@
         if(window.loadChapReacts) window.loadChapReacts(id);
         reader.style.display = 'block';
         document.body.style.overflow = 'hidden';
-        checkAchievement('книжник');
+        const saved = getP(id);
+        setTimeout(() => { reader.scrollTop = saved.pos; }, 50);
     }
 
     function onReaderScroll() {
         const scrolled = (reader.scrollTop / (reader.scrollHeight - reader.clientHeight)) * 100;
         progLine.style.width = scrolled + "%";
-        if(scrolled > 95) {
-            const p = JSON.parse(localStorage.getItem(`p_v11_${window.currentId}`) || '{"perc":0}');
-            if(p.perc < 95) { addXP(10); }
-            localStorage.setItem(`p_v11_${window.currentId}`, JSON.stringify({perc: 100, pos: reader.scrollTop}));
-        }
+        clearTimeout(window.sTimer);
+        window.sTimer = setTimeout(() => setP(currentId, Math.round(scrolled), reader.scrollTop), 300);
     }
 
     function applyTheme(t) {
-        document.getElementById('textContent').className = `book-content theme-${t}`;
-        document.getElementById('topBar').style.background = (t === 'paper' ? '#f4f1ea' : (t === 'sepia' ? '#2b2520' : '#0d0d0d'));
+        const content = document.getElementById('textContent');
+        const toolbar = document.getElementById('topBar');
+        content.className = `book-content theme-${t}`;
+        toolbar.style.background = (t === 'paper' ? '#f4f1ea' : (t === 'sepia' ? '#2b2520' : '#0d0d0d'));
     }
 
     function changeSize(d) {
@@ -392,11 +341,37 @@
     }
 
     function closeBook() { reader.style.display = 'none'; document.body.style.overflow = 'auto'; renderVolumes(); }
-    function nextChapter() { if(window.currentId < bookData.length) openChapter(window.currentId + 1); }
-    function prevChapter() { if(window.currentId > 1) openChapter(window.currentId - 1); }
+    function nextChapter() { if(currentId < bookData.length) openChapter(currentId + 1); }
+    function prevChapter() { if(currentId > 1) openChapter(currentId - 1); }
     function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2500); }
 
     function renderVolumes() {
         const cont = document.getElementById('volumes-container');
         cont.innerHTML = '';
-        const vols = [{ t: "Т
+        const vols = [{ t: "Том I: Черти и Шакалы", r: [1, 22] }, { t: "Том II: Как по маслу но без смазки", r: [23, 100] }];
+        vols.forEach(v => {
+            const chs = bookData.filter(c => c.id >= v.r[0] && c.id <= v.r[1]);
+            if (chs.length > 0) {
+                const sec = document.createElement('div');
+                sec.innerHTML = `<div class="volume-header"><h2>${v.t}</h2><div class="volume-line"></div></div><div class="chapters-grid"></div>`;
+                const grid = sec.querySelector('.chapters-grid');
+                chs.forEach(ch => {
+                    const p = getP(ch.id);
+                    const card = document.createElement('div');
+                    card.className = `chapter-card ${p.perc >= 98 ? 'completed' : ''}`;
+                    card.onclick = () => openChapter(ch.id);
+                    card.innerHTML = `<h3 style="margin:0; font-size:0.85rem;">Глава ${ch.id}</h3><div style="font-size:0.6rem; opacity:0.5; margin-top:5px;">${p.perc}% пройдено</div>`;
+                    grid.appendChild(card);
+                });
+                cont.appendChild(sec);
+            }
+        });
+    }
+
+    renderVolumes();
+    getEmilQuote();
+</script>
+</body>
+</html>
+
+
