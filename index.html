@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Причудливые авантюры Эмиля Гиеновича</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lora:ital,wght@0,400;1,500&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -221,6 +221,7 @@
 
 <script src="chapters.js"></script>
 <script type="module">
+  // Весь блок Firebase остается без изменений
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getDatabase, ref, push, onValue, remove, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
@@ -239,7 +240,6 @@
   const saveMyMsg = (id) => { const m = getMyMsgs(); m.push(id); localStorage.setItem('emil_v11_msgs', JSON.stringify(m)); };
 
   window.openComments = function(topic) {
-    vibrate(10);
     currentTopic = topic;
     document.getElementById('commHeaderTitle').innerText = topic === 'global' ? 'ОБЩИЙ ЧАТ' : `ГЛАВА ${topic}`;
     document.getElementById('comments-modal').style.display = 'block';
@@ -267,25 +267,13 @@
     });
   };
 
-  window.addMsgReact = (id, type) => {
-    vibrate(10);
-    runTransaction(ref(db, `comments/${currentTopic}/${id}/reactions/${type}`), (c) => (c || 0) + 1);
-  }
-  
-  window.deleteComment = (id) => { 
-    vibrate(20);
-    if(confirm('Удалить?')) remove(ref(db, `comments/${currentTopic}/${id}`)); 
-  };
-
-  window.toggleComments = (s) => {
-    vibrate(5);
-    document.getElementById('comments-modal').style.display = s ? 'block' : 'none';
-  }
+  window.addMsgReact = (id, type) => runTransaction(ref(db, `comments/${currentTopic}/${id}/reactions/${type}`), (c) => (c || 0) + 1);
+  window.deleteComment = (id) => { if(confirm('Удалить?')) remove(ref(db, `comments/${currentTopic}/${id}`)); };
+  window.toggleComments = (s) => document.getElementById('comments-modal').style.display = s ? 'block' : 'none';
 
   document.getElementById('sendBtn').onclick = () => {
     const input = document.getElementById('commInput');
     if(!input.value.trim()) return;
-    vibrate(30);
     push(ref(db, 'comments/' + currentTopic), { text: input.value, timestamp: serverTimestamp() }).then(res => {
         saveMyMsg(res.key);
         input.value = '';
@@ -303,24 +291,15 @@
   };
 
   window.addChapReact = (emoji) => {
-    vibrate(15);
     runTransaction(ref(db, `chap_reacts/${currentId}/${emoji}`), (c) => (c || 0) + 1);
     showToast("Твой голос принят! ✨");
   };
 </script>
 
 <script>
-    // ФУНКЦИЯ ТАКТИЛЬНОГО ОТКЛИКА
-    function vibrate(ms) {
-        if (navigator.vibrate) {
-            navigator.vibrate(ms);
-        }
-    }
-
     const reader = document.getElementById('reader');
     const progLine = document.getElementById('progLine');
     let currentId = 1;
-    let lastVibrateProgress = 0; // Для отклика при скролле
 
     const quotes = [
         "Волк не тот, кто волк, а тот, кто поел и спит.",
@@ -352,7 +331,6 @@
     ];
 
     function getEmilQuote() {
-        vibrate(15);
         const el = document.getElementById('emil-quote');
         if(!el) return;
         el.style.opacity = 0;
@@ -366,14 +344,13 @@
     function setP(id, perc, pos) { localStorage.setItem(`p_v11_${id}`, JSON.stringify({perc, pos})); }
 
     function openChapter(id) {
-        vibrate(10);
         currentId = id;
         const ch = bookData.find(c => c.id === id);
         if(!ch) return;
         document.getElementById('innerNum').innerText = `Глава ${ch.id}`;
         document.getElementById('innerTitle').innerText = ch.title;
         document.getElementById('chapterBody').innerText = ch.content;
-        document.getElementById('chapterCommBtn').onclick = () => { vibrate(10); openComments(id); };
+        document.getElementById('chapterCommBtn').onclick = () => openComments(id);
         if(window.loadChapReacts) window.loadChapReacts(id);
         reader.style.display = 'block';
         document.body.style.overflow = 'hidden';
@@ -382,7 +359,6 @@
     }
 
     function downloadChapter() {
-        vibrate(25);
         const ch = bookData.find(c => c.id === currentId);
         if(!ch) return;
         const fileName = `Emil_Glava_${ch.id}.txt`;
@@ -400,20 +376,11 @@
     function onReaderScroll() {
         const scrolled = (reader.scrollTop / (reader.scrollHeight - reader.clientHeight)) * 100;
         progLine.style.width = scrolled + "%";
-        
-        // Тактильный отклик при "листании" - срабатывает каждые 15% прогресса
-        let currentStep = Math.floor(scrolled / 15);
-        if(currentStep !== lastVibrateProgress) {
-            vibrate(5);
-            lastVibrateProgress = currentStep;
-        }
-
         clearTimeout(window.sTimer);
         window.sTimer = setTimeout(() => setP(currentId, Math.round(scrolled), reader.scrollTop), 300);
     }
 
     function applyTheme(t) {
-        vibrate(8);
         const content = document.getElementById('textContent');
         const toolbar = document.getElementById('topBar');
         content.className = `book-content theme-${t}`;
@@ -421,31 +388,17 @@
     }
 
     function changeSize(d) {
-        vibrate(5);
         const c = document.getElementById('textContent');
         const s = parseFloat(window.getComputedStyle(c).fontSize);
         c.style.fontSize = (s + d) + 'px';
     }
 
-    function closeBook() { 
-        vibrate(10);
-        reader.style.display = 'none'; 
-        document.body.style.overflow = 'auto'; 
-        renderVolumes(); 
-    }
-
-    function nextChapter() { 
-        vibrate(10);
-        if(currentId < bookData.length) openChapter(currentId + 1); 
-    }
-
-    function prevChapter() { 
-        vibrate(10);
-        if(currentId > 1) openChapter(currentId - 1); 
-    }
-
+    function closeBook() { reader.style.display = 'none'; document.body.style.overflow = 'auto'; renderVolumes(); }
+    function nextChapter() { if(currentId < bookData.length) openChapter(currentId + 1); }
+    function prevChapter() { if(currentId > 1) openChapter(currentId - 1); }
     function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2500); }
 
+    // ОБНОВЛЕННЫЙ РЕНДЕР
     function renderVolumes() {
         const cont = document.getElementById('volumes-container');
         const searchTerm = document.getElementById('chapterSearch').value.toLowerCase();
@@ -481,7 +434,7 @@
                     const p = getP(ch.id);
                     const card = document.createElement('div');
                     card.className = `chapter-card ${p.perc >= 98 ? 'completed' : ''}`;
-                    card.onclick = () => { vibrate(10); openChapter(ch.id); };
+                    card.onclick = () => openChapter(ch.id);
                     card.innerHTML = `
                         <div>
                             <div style="font-family:'Montserrat'; font-weight:800; font-size:0.6rem; color:var(--gold);">ГЛАВА ${ch.id}</div>
