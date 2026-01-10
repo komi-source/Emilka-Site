@@ -18,10 +18,10 @@
         
         .progress-line { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0%; z-index: 10000; transition: width 0.3s; }
 
-        /* Кнопка музыки ПОДНЯТА выше (bottom: 90px), чтобы не мешать панели в читалке */
+        /* Плавающая кнопка музыки */
         .audio-control {
             position: fixed;
-            bottom: 90px;
+            bottom: 25px;
             right: 20px;
             z-index: 9999;
             background: rgba(20, 20, 20, 0.8);
@@ -70,9 +70,10 @@
 
         @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
 
-        /* Поиск */
+        /* Поиск и Фильтры */
         .search-container { max-width: 1000px; margin: 20px auto 0; padding: 0 15px; }
         #chapterSearch { width: 100%; background: #121212; border: 1px solid #333; color: white; padding: 12px 20px; border-radius: 12px; font-family: 'Montserrat'; font-size: 0.8rem; box-sizing: border-box; outline: none; }
+        #chapterSearch:focus { border-color: var(--gold); }
 
         /* Сетка глав */
         .container { max-width: 1000px; margin: 0 auto; padding: 0px 15px 100px; }
@@ -88,6 +89,7 @@
             border-radius: 12px; 
             padding: 18px 15px; 
             cursor: pointer; 
+            text-align: left; 
             transition: 0.3s; 
             display: flex; 
             flex-direction: column; 
@@ -96,32 +98,63 @@
         }
         .chapter-card:active { transform: scale(0.95); }
         .chapter-card.completed { border-color: #2ecc71; background: linear-gradient(145deg, #121212, #0a1a10); }
+        .chapter-card .ch-name { 
+            font-size: 0.75rem; 
+            color: #fff; 
+            margin-top: 8px; 
+            font-family: 'Lora'; 
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            opacity: 0.8;
+        }
 
         /* ЧИТАЛКА */
         #reader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9000; overflow-y: auto; scroll-behavior: smooth; }
-        .toolbar { position: sticky; top: 0; background: rgba(13,13,13,0.95); padding: 10px; display: flex; justify-content: space-between; align-items: center; z-index: 9500; backdrop-filter: blur(10px); border-bottom: 1px solid #222; }
+        .toolbar { position: sticky; top: 0; background: rgba(13,13,13,0.95); padding: 10px; display: flex; justify-content: space-between; align-items: center; z-index: 9500; backdrop-filter: blur(10px); border-bottom: 1px solid #222; transition: all 0.4s; }
 
         .book-content { 
-            max-width: 650px; margin: 0 auto; padding: 30px 20px 120px; 
+            max-width: 650px; margin: 0 auto; padding: 30px 20px 100px; 
             line-height: 1.8; font-size: 1.2rem; min-height: 100vh;
+            transition: background-color 0.4s ease, color 0.4s ease, font-size 0.3s ease;
         }
         
-        /* Блок в начале главы */
-        .reader-hint { background: rgba(198, 166, 103, 0.1); border: 1px dashed var(--gold); padding: 15px; border-radius: 10px; font-size: 0.8rem; text-align: center; margin-bottom: 30px; color: var(--gold); }
+        .reader-hint { background: rgba(198, 166, 103, 0.1); border: 1px dashed var(--gold); padding: 12px; border-radius: 10px; font-size: 0.8rem; text-align: center; margin-bottom: 30px; color: var(--gold); font-style: italic; }
 
         .tool-btn { background: #1a1a1a; border: 1.5px solid var(--gold); color: var(--gold); padding: 8px 12px; cursor: pointer; font-size: 0.7rem; font-family: 'Montserrat'; text-transform: uppercase; border-radius: 8px; font-weight: 800; transition: 0.2s; }
         .tool-btn:active, .tool-btn.active { background: var(--gold); color: #000; }
 
-        .btn-download { background: var(--gold) !important; color: #000 !important; border: none !important; margin-top: 10px; width: 100%; padding: 12px !important; font-weight: 900; }
+        .btn-download { background: var(--gold) !important; color: #000 !important; border: none !important; margin-top: 10px; padding: 10px 15px !important; }
 
-        /* Чат */
+        /* Темы */
+        .theme-paper { background-color: #f4f1ea !important; color: #1a1a1a !important; }
+        .theme-dark { background-color: #0d0d0d !important; color: #d1d1d1 !important; }
+        .theme-sepia { background-color: var(--sepia-bg) !important; color: var(--sepia-text) !important; }
+        .theme-night { background-color: #030303 !important; color: #666 !important; } 
+
+        /* ОКНО КОММЕНТАРИЕВ */
         #comments-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; }
         .comm-wrapper { display: flex; flex-direction: column; height: 100%; max-width: 600px; margin: 0 auto; background: #080808; }
+        
+        .comm-header { padding: 20px; border-bottom: 1px solid #222; color: var(--gold); font-family: 'Playfair Display'; display: flex; justify-content: space-between; align-items: center; }
         .comm-list { flex: 1; overflow-y: auto; padding: 15px; }
-        .comm-item { background: #121212; padding: 15px; margin-bottom: 12px; border-radius: 12px; border-left: 4px solid var(--gold); }
-        #commInput { width: 100%; background: #000; border: 1px solid #444; color: #fff; padding: 15px; border-radius: 12px; box-sizing: border-box; font-family: 'Lora'; font-size: 1rem; margin-bottom: 10px; }
+        .comm-item { background: #121212; padding: 15px; margin-bottom: 12px; border-radius: 12px; border-left: 4px solid var(--gold); position: relative; }
+        
+        .react-bar { display: flex; gap: 8px; margin-top: 10px; }
+        .react-btn { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; }
 
-        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 12px 25px; border-radius: 50px; font-size: 0.8rem; display: none; z-index: 30000; font-weight: bold; }
+        .comm-input-area { padding: 20px; background: #111; border-top: 1px solid #222; padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+        #commInput { width: 100%; background: #000; border: 1px solid #444; color: #fff; padding: 15px; border-radius: 12px; box-sizing: border-box; outline: none; margin-bottom: 12px; font-family: 'Lora'; font-size: 1rem; }
+        
+        .comm-btns { display: flex; gap: 10px; }
+        .btn-send { flex: 2; background: var(--gold); color: #000; border: none; padding: 15px; border-radius: 10px; font-weight: 900; font-family: 'Montserrat'; text-transform: uppercase; }
+        .btn-close { flex: 1; background: #222; color: #fff; border: none; padding: 15px; border-radius: 10px; font-weight: bold; }
+
+        .del-btn { color: #ff4444; background: none; border: none; font-size: 0.7rem; float: right; cursor: pointer; font-weight: bold; }
+
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 12px 25px; border-radius: 50px; font-size: 0.8rem; display: none; z-index: 30000; font-weight: bold; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
@@ -143,7 +176,7 @@
         
         <div class="quote-box" onclick="getEmilQuote()">
             <div id="emil-quote">Загрузка мудрости...</div>
-            <div class="quote-hint"><span>👆</span> Нажми для получения базы</div>
+            <div class="quote-hint"><span>👆</span> Нажми на окно, чтобы сгенерить базу</div>
             <button class="share-quote-btn" onclick="shareQuote(event)">📤 Поделиться базой</button>
         </div>
 
@@ -153,8 +186,9 @@
     </div>
 
     <div class="search-container">
-        <input type="text" id="chapterSearch" placeholder="Поиск главы..." oninput="renderVolumes()">
+        <input type="text" id="chapterSearch" placeholder="Поиск главы по названию или номеру..." oninput="renderVolumes()">
     </div>
+    
     <div class="container" id="volumes-container"></div>
 </div>
 
@@ -170,31 +204,32 @@
             <button class="tool-btn" onclick="applyTheme('paper')">📜</button>
             <button class="tool-btn" onclick="applyTheme('sepia')">☕</button>
             <button class="tool-btn" onclick="applyTheme('dark')">🌘</button>
+            <button class="tool-btn" onclick="applyTheme('night')">🌌</button>
         </div>
     </div>
 
     <div class="book-content theme-dark" id="textContent">
         <div style="text-align: center; margin-bottom: 20px;">
-            <h1 id="innerNum" style="color:var(--gold); font-family: 'Playfair Display'; margin:0;"></h1>
-            <p id="innerTitle" style="font-style: italic; opacity: 0.6;"></p>
+            <h1 id="innerNum" style="color:var(--gold); font-family: 'Playfair Display'; margin:0; font-size: 2rem;"></h1>
+            <p id="innerTitle" style="font-style: italic; opacity: 0.6; margin-top: 5px;"></p>
         </div>
 
         <div class="reader-hint">
-            <b>✨ Авантюрист, внимание!</b><br>
-            В конце этой главы тебя ждет чат для обсуждения и реакции. 
-            <button class="tool-btn btn-download" onclick="downloadChapter()">📥 СКАЧАТЬ ГЛАВУ (.TXT)</button>
+            Напоминание: обсудить и оценить этот шедевр можно в самом конце главы ✨
+            <br>
+            <button class="tool-btn btn-download" onclick="downloadChapter()">📥 СКАЧАТЬ ЭТУ ГЛАВУ (.txt)</button>
         </div>
 
-        <div id="chapterBody" style="white-space: pre-wrap;"></div>
+        <div id="chapterBody"></div>
         
         <div style="margin-top: 60px; display: flex; flex-direction: column; align-items: center; gap: 20px; border-top: 1px double var(--gold); padding-top: 40px;">
-            <div style="color:var(--gold); font-size: 0.8rem; font-weight: bold;">ОЦЕНИ ШЕДЕВР</div>
+            <div style="color:var(--gold); font-size: 0.8rem; font-weight: bold; letter-spacing: 2px;">ОЦЕНИТЕ ГЛАВУ</div>
             <div style="display: flex; gap: 15px;">
-                <button class="tool-btn" onclick="addChapReact('🔥')">🔥 <span id="v-🔥">0</span></button>
-                <button class="tool-btn" onclick="addChapReact('👏')">👏 <span id="v-👏">0</span></button>
-                <button class="tool-btn" onclick="addChapReact('🤣')">🤣 <span id="v-🤣">0</span></button>
+                <button class="react-btn" style="padding: 10px 20px; font-size: 1rem;" onclick="addChapReact('🔥')">🔥 <span id="v-🔥">0</span></button>
+                <button class="react-btn" style="padding: 10px 20px; font-size: 1rem;" onclick="addChapReact('👏')">👏 <span id="v-👏">0</span></button>
+                <button class="react-btn" style="padding: 10px 20px; font-size: 1rem;" onclick="addChapReact('🤣')">🤣 <span id="v-🤣">0</span></button>
             </div>
-            <button class="tool-btn" style="padding: 18px; width: 100%;" id="chapterCommBtn">💬 ОБСУДИТЬ В ЧАТЕ</button>
+            <button class="tool-btn" style="padding: 18px; width: 100%; font-size: 0.9rem;" id="chapterCommBtn">💬 ОБСУДИТЬ ГЛАВУ</button>
             <div style="display: flex; gap: 10px; width: 100%;">
                 <button class="tool-btn" style="flex: 1; padding: 15px;" onclick="prevChapter()">← НАЗАД</button>
                 <button class="tool-btn" style="flex: 1; padding: 15px;" onclick="nextChapter()">ВПЕРЕД →</button>
@@ -205,16 +240,16 @@
 
 <div id="comments-modal">
     <div class="comm-wrapper">
-        <div class="comm-header" style="padding:20px; border-bottom:1px solid #222; display:flex; justify-content:space-between;">
-            <span id="commHeaderTitle" style="font-weight: 900; color:var(--gold);">ЧАТ</span>
+        <div class="comm-header">
+            <span id="commHeaderTitle" style="font-weight: 900; letter-spacing: 1px;">ЧАТ</span>
             <button onclick="toggleComments(false)" style="background:none; border:none; color:#fff; font-size: 1.5rem;">&times;</button>
         </div>
         <div class="comm-list" id="commList"></div>
-        <div class="comm-input-area" style="padding:20px; background:#111;">
+        <div class="comm-input-area">
             <textarea id="commInput" placeholder="Твое мнение..." rows="2"></textarea>
-            <div style="display:flex; gap:10px;">
-                <button class="tool-btn" style="flex:2; background:var(--gold); color:#000;" id="sendBtn">ОТПРАВИТЬ</button>
-                <button class="tool-btn" style="flex:1" onclick="toggleComments(false)">ЗАКРЫТЬ</button>
+            <div class="comm-btns">
+                <button class="btn-send" id="sendBtn">ОТПРАВИТЬ</button>
+                <button class="btn-close" onclick="toggleComments(false)">ВЫЙТИ</button>
             </div>
         </div>
     </div>
@@ -223,7 +258,7 @@
 <script src="chapters.js"></script>
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, push, onValue, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, push, onValue, remove, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDD43BfRt9tkn4k0pgTRuQ7-SCR_PmjR8c",
@@ -236,42 +271,63 @@
     const db = getDatabase(app);
     let currentTopic = 'global';
 
+    const getMyMsgs = () => JSON.parse(localStorage.getItem('emil_v11_msgs') || '[]');
+    const saveMyMsg = (id) => { const m = getMyMsgs(); m.push(id); localStorage.setItem('emil_v11_msgs', JSON.stringify(m)); };
+
     window.openComments = function(topic) {
         currentTopic = topic;
         document.getElementById('commHeaderTitle').innerText = topic === 'global' ? 'ОБЩИЙ ЧАТ' : `ГЛАВА ${topic}`;
         document.getElementById('comments-modal').style.display = 'block';
+        
         onValue(ref(db, 'comments/' + currentTopic), (snap) => {
             const list = document.getElementById('commList');
             list.innerHTML = '';
             const data = snap.val();
+            const myMsgs = getMyMsgs();
             if(data) {
                 Object.entries(data).reverse().forEach(([id, c]) => {
-                    list.innerHTML += `<div class="comm-item"><div style="color:var(--gold); font-weight:800; font-size:0.7rem;">АНОНИМ</div><div>${c.text}</div></div>`;
+                    const isMine = myMsgs.includes(id);
+                    list.innerHTML += `
+                        <div class="comm-item">
+                            ${isMine ? `<button class="del-btn" onclick="deleteComment('${id}')">УДАЛИТЬ</button>` : ''}
+                            <div style="color:var(--gold); font-weight:800; font-size:0.7rem; margin-bottom:8px; font-family:'Montserrat';">АНОНИМНЫЙ ШАКАЛ</div>
+                            <div style="font-size:0.95rem; line-height:1.4;">${c.text}</div>
+                            <div class="react-bar">
+                                <button class="react-btn" onclick="addMsgReact('${id}', '👍')">👍 ${c.reactions?.['👍'] || 0}</button>
+                                <button class="react-btn" onclick="addMsgReact('${id}', '🤣')">🤣 ${c.reactions?.['🤣'] || 0}</button>
+                            </div>
+                        </div>`;
                 });
             }
         });
     };
 
+    window.addMsgReact = (id, type) => runTransaction(ref(db, `comments/${currentTopic}/${id}/reactions/${type}`), (c) => (c || 0) + 1);
+    window.deleteComment = (id) => { if(confirm('Удалить?')) remove(ref(db, `comments/${currentTopic}/${id}`)); };
+    window.toggleComments = (s) => document.getElementById('comments-modal').style.display = s ? 'block' : 'none';
+
     document.getElementById('sendBtn').onclick = () => {
         const input = document.getElementById('commInput');
         if(!input.value.trim()) return;
-        push(ref(db, 'comments/' + currentTopic), { text: input.value, timestamp: serverTimestamp() });
-        input.value = '';
-    };
-
-    window.addChapReact = (emoji) => {
-        runTransaction(ref(db, `chap_reacts/${currentId}/${emoji}`), (c) => (c || 0) + 1);
-        showToast("Голос принят! ✨");
+        push(ref(db, 'comments/' + currentTopic), { text: input.value, timestamp: serverTimestamp() }).then(res => {
+            saveMyMsg(res.key);
+            input.value = '';
+        });
     };
 
     window.loadChapReacts = (id) => {
         onValue(ref(db, `chap_reacts/${id}`), (snap) => {
             const val = snap.val() || {};
-            ['🔥', '👏', '🤣'].forEach(e => {
-                const el = document.getElementById(`v-${e}`);
-                if(el) el.innerText = val[e] || 0;
+            ['🔥', '👏', '🤣'].forEach(emoji => {
+                const el = document.getElementById(`v-${emoji}`);
+                if(el) el.innerText = val[emoji] || 0;
             });
         });
+    };
+
+    window.addChapReact = (emoji) => {
+        runTransaction(ref(db, `chap_reacts/${currentId}/${emoji}`), (c) => (c || 0) + 1);
+        showToast("Твой голос принят! ✨");
     };
 </script>
 
@@ -283,28 +339,72 @@
     let currentId = 1;
     let autoScrollInterval = null;
 
-    // ЦИТАТЫ (ДОБАВИЛ ЕЩЁ БОЛЬШЕ АБСУРДА)
+    // ФУНКЦИЯ 4: ПОДЕЛИТЬСЯ МУДРОСТЬЮ
+    function shareQuote(e) {
+        e.stopPropagation();
+        const text = document.getElementById('emil-quote').innerText;
+        const fullText = `«${text}»\n\n— Эмиль Гиенович, "Причудливые авантюры"`;
+        
+        navigator.clipboard.writeText(fullText).then(() => {
+            showToast("База скопирована в буфер! 📋");
+        }).catch(() => {
+            showToast("Ошибка копирования");
+        });
+    }
+
+    // УДОБНАЯ ФУНКЦИЯ: АВТО-СКРОЛЛ
+    function toggleAutoscroll() {
+        const btn = document.getElementById('autoscrollBtn');
+        if (autoScrollInterval) {
+            clearInterval(autoScrollInterval);
+            autoScrollInterval = null;
+            btn.classList.remove('active');
+            showToast("Авто-скролл выключен");
+        } else {
+            btn.classList.add('active');
+            showToast("Авто-скролл: Взлетаем! 🚀");
+            autoScrollInterval = setInterval(() => {
+                reader.scrollBy(0, 1);
+            }, 30); // Скорость прокрутки
+        }
+    }
+
+    // МУЗЫКА
+    function toggleMusic() {
+        if (audio.paused) {
+            audio.play();
+            document.getElementById('musicIcon').innerText = '⏸️';
+            musicBtn.classList.add('music-playing');
+            showToast("Музыка включена 🎵");
+        } else {
+            audio.pause();
+            document.getElementById('musicIcon').innerText = '🎵';
+            musicBtn.classList.remove('music-playing');
+            showToast("Музыка выключена");
+        }
+    }
+
+    // УМНАЯ ТЕМА
+    function autoTheme() {
+        const hour = new Date().getHours();
+        if (hour >= 21 || hour < 6) {
+            applyTheme('night');
+        }
+    }
+
     const quotes = [
         "Волк не тот, кто волк, а тот, кто поел и спит.",
-        "Одна ошибка — и ты ошибся.",
-        "Если тебе плюют в спину — значит ты идешь задом наперед.",
+        "Запомни: лучше прийти на 5 минут позже, чем на 50 лет раньше.",
+        "Если тебе плюют в спину — значит ты впереди.",
         "Жизнь — это как шахматы. Я в них не играю, я продаю доску.",
-        "Кто рано встает — тому весь день спать хочется.",
-        "Работа — не волк. Работа — это ворк. А волк — это гулять.",
-        "Не жди подходящего момента, создай его и испугайся.",
-        "Лучше быть последним в списке миллиардеров, чем первым в списке на уборку туалета.",
-        "Если жизнь закрыла перед тобой дверь — вылези через окно, пока не поставили решетки.",
-        "Слово — не воробей. Слово — это буквы.",
-        "Никогда не сдавайся, сдайся только если очень хочется спать.",
-        "Бесплатный сыр бывает только в мышеловке, которая уже захлопнулась на ком-то другом.",
-        "Ученье — свет, а неученье — приятный полумрак.",
-        "Чтобы начать с чистого листа, нужно сначала дописать грязный.",
-        "Тише едешь — меньше потратишь на бензин.",
-        "Не откладывай на завтра то, что можно вообще не делать."
+        "Одна ошибка — и ты ошибся.",
+        "Как говорил мой дед, «Я твой дед».",
+        "Кто рано встает — тому весь день спать хочется."
     ];
 
     function getEmilQuote() {
         const el = document.getElementById('emil-quote');
+        if(!el) return;
         el.style.opacity = 0;
         setTimeout(() => {
             el.innerText = quotes[Math.floor(Math.random() * quotes.length)];
@@ -312,27 +412,8 @@
         }, 200);
     }
 
-    function shareQuote(e) {
-        e.stopPropagation();
-        const text = document.getElementById('emil-quote').innerText;
-        navigator.clipboard.writeText(`«${text}» — Эмиль Гиевич`).then(() => showToast("База скопирована! 📋"));
-    }
-
-    function toggleAutoscroll() {
-        const btn = document.getElementById('autoscrollBtn');
-        if (autoScrollInterval) {
-            clearInterval(autoScrollInterval); autoScrollInterval = null;
-            btn.classList.remove('active');
-        } else {
-            btn.classList.add('active');
-            autoScrollInterval = setInterval(() => reader.scrollBy(0, 1), 35);
-        }
-    }
-
-    function toggleMusic() {
-        if (audio.paused) { audio.play(); musicBtn.classList.add('music-playing'); }
-        else { audio.pause(); musicBtn.classList.remove('music-playing'); }
-    }
+    function getP(id) { return JSON.parse(localStorage.getItem(`p_v11_${id}`) || '{"perc":0,"pos":0}'); }
+    function setP(id, perc, pos) { localStorage.setItem(`p_v11_${id}`, JSON.stringify({perc, pos})); }
 
     function openChapter(id) {
         currentId = id;
@@ -345,64 +426,108 @@
         if(window.loadChapReacts) window.loadChapReacts(id);
         reader.style.display = 'block';
         document.body.style.overflow = 'hidden';
-        const saved = JSON.parse(localStorage.getItem(`p_v11_${id}`) || '{"pos":0}');
+        const saved = getP(id);
         setTimeout(() => { reader.scrollTop = saved.pos; }, 50);
+        autoTheme(); 
     }
 
-    // ИСПРАВЛЕННАЯ КОДИРОВКА ПРИ СКАЧИВАНИИ
     function downloadChapter() {
         const ch = bookData.find(c => c.id === currentId);
-        const BOM = "\uFEFF"; // Метка для UTF-8 (чтобы Windows видел русские буквы)
-        const text = BOM + `ЭМИЛЬ ГИЕНОВИЧ\nГлава ${ch.id}: ${ch.title}\n\n${ch.content}`;
-        const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+        if(!ch) return;
+        const fileText = `ЭМИЛЬ ГИЕНОВИЧ\nГлава ${ch.id}: ${ch.title}\n\n${ch.content}`;
+        const blob = new Blob([fileText], { type: 'text/plain' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `Emil_Glava_${ch.id}.txt`;
+        link.download = `Glava_${ch.id}.txt`;
         link.click();
-        showToast("Файл скачан! 📥");
+        showToast("Файл скачан 📥");
     }
 
     function onReaderScroll() {
         const scrolled = (reader.scrollTop / (reader.scrollHeight - reader.clientHeight)) * 100;
         progLine.style.width = scrolled + "%";
-        localStorage.setItem(`p_v11_${currentId}`, JSON.stringify({perc: Math.round(scrolled), pos: reader.scrollTop}));
+        clearTimeout(window.sTimer);
+        window.sTimer = setTimeout(() => setP(currentId, Math.round(scrolled), reader.scrollTop), 300);
     }
 
-    function applyTheme(t) { document.getElementById('textContent').className = `book-content theme-${t}`; }
+    function applyTheme(t) {
+        const content = document.getElementById('textContent');
+        const toolbar = document.getElementById('topBar');
+        content.className = `book-content theme-${t}`;
+        if(t === 'paper') toolbar.style.background = '#f4f1ea';
+        else if(t === 'sepia') toolbar.style.background = '#2b2520';
+        else if(t === 'night') toolbar.style.background = '#030303';
+        else toolbar.style.background = '#0d0d0d';
+    }
+
     function changeSize(d) {
-        const el = document.getElementById('textContent');
-        el.style.fontSize = (parseFloat(window.getComputedStyle(el).fontSize) + d) + 'px';
+        const c = document.getElementById('textContent');
+        const s = parseFloat(window.getComputedStyle(c).fontSize);
+        c.style.fontSize = (s + d) + 'px';
     }
 
-    function closeBook() { reader.style.display = 'none'; document.body.style.overflow = 'auto'; renderVolumes(); }
+    function closeBook() { 
+        if(autoScrollInterval) toggleAutoscroll();
+        reader.style.display = 'none'; 
+        document.body.style.overflow = 'auto'; 
+        renderVolumes(); 
+    }
+    
     function nextChapter() { if(currentId < bookData.length) openChapter(currentId + 1); }
     function prevChapter() { if(currentId > 1) openChapter(currentId - 1); }
     function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2500); }
-    function toggleComments(s) { document.getElementById('comments-modal').style.display = s ? 'block' : 'none'; }
 
     function renderVolumes() {
         const cont = document.getElementById('volumes-container');
-        const search = document.getElementById('chapterSearch').value.toLowerCase();
+        const searchTerm = document.getElementById('chapterSearch').value.toLowerCase();
         cont.innerHTML = '';
-        const vols = [{ t: "Том I", r: [1, 20] }, { t: "Том II", r: [21, 100] }];
+        
+        const vols = [
+            { t: "Том I: Черти и Шакалы", r: [1, 22] }, 
+            { t: "Том II: Адское путешествие", r: [23, 100] }
+        ];
+
         vols.forEach(v => {
-            const chs = bookData.filter(c => c.id >= v.r[0] && c.id <= v.r[1] && (c.title.toLowerCase().includes(search) || c.id.toString().includes(search)));
-            if (chs.length) {
-                let html = `<div class="volume-header"><h2>${v.t}</h2><div class="volume-line"></div></div><div class="chapters-grid">`;
+            const chs = bookData.filter(c => 
+                c.id >= v.r[0] && c.id <= v.r[1] && 
+                (c.title.toLowerCase().includes(searchTerm) || c.id.toString().includes(searchTerm))
+            );
+
+            if (chs.length > 0) {
+                const completedCount = chs.filter(ch => getP(ch.id).perc >= 98).length;
+                const sec = document.createElement('div');
+                sec.innerHTML = `
+                    <div class="volume-header">
+                        <h2>${v.t}</h2>
+                        <div class="volume-line"></div>
+                        <div class="volume-stats">${completedCount}/${chs.length}</div>
+                    </div>
+                    <div class="chapters-grid"></div>`;
+                
+                const grid = sec.querySelector('.chapters-grid');
                 chs.forEach(ch => {
-                    const p = JSON.parse(localStorage.getItem(`p_v11_${ch.id}`) || '{"perc":0}');
-                    html += `<div class="chapter-card ${p.perc >= 98 ? 'completed' : ''}" onclick="openChapter(${ch.id})">
-                        <div style="font-size:0.6rem; color:var(--gold); font-weight:800;">ГЛАВА ${ch.id}</div>
-                        <div style="font-size:0.8rem; margin-top:5px;">${ch.title}</div>
-                        <div style="font-size:0.5rem; opacity:0.5; margin-top:10px;">${p.perc}%</div>
-                    </div>`;
+                    const p = getP(ch.id);
+                    const card = document.createElement('div');
+                    card.className = `chapter-card ${p.perc >= 98 ? 'completed' : ''}`;
+                    card.onclick = () => openChapter(ch.id);
+                    card.innerHTML = `
+                        <div>
+                            <div style="font-family:'Montserrat'; font-weight:800; font-size:0.6rem; color:var(--gold);">ГЛАВА ${ch.id}</div>
+                            <div class="ch-name">${ch.title}</div>
+                        </div>
+                        <div style="font-size:0.55rem; opacity:0.5; margin-top:10px;">${p.perc >= 98 ? '✅' : p.perc + '%'}</div>`;
+                    grid.appendChild(card);
                 });
-                cont.innerHTML += html + '</div>';
+                cont.appendChild(sec);
             }
         });
     }
 
-    window.onload = () => { renderVolumes(); getEmilQuote(); };
+    window.onload = () => {
+        renderVolumes();
+        getEmilQuote();
+        autoTheme();
+    };
 </script>
 </body>
 </html>
