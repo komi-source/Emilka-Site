@@ -82,7 +82,7 @@
         .volume-stats { font-size: 0.6rem; color: #666; font-family: 'Montserrat'; font-weight: bold; }
         .volume-line { flex-grow: 1; height: 1px; background: linear-gradient(to right, var(--gold), transparent); }
 
-        .chapters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-top: 15px; }
+        .chapters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-top: 15px; }
         .chapter-card { 
             background: var(--card-bg); 
             border: 1px solid #222; 
@@ -113,20 +113,45 @@
 
         /* ЧИТАЛКА */
         #reader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9000; overflow-y: auto; scroll-behavior: smooth; }
-        .toolbar { position: sticky; top: 0; background: rgba(13,13,13,0.95); padding: 10px; display: flex; justify-content: space-between; align-items: center; z-index: 9500; backdrop-filter: blur(10px); border-bottom: 1px solid #222; transition: all 0.4s; }
+        .toolbar { 
+            position: sticky; 
+            top: 0; 
+            background: rgba(13,13,13,0.98); 
+            padding: 8px; 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 8px; 
+            z-index: 9500; 
+            backdrop-filter: blur(15px); 
+            border-bottom: 1px solid #333; 
+        }
 
         .book-content { 
-            max-width: 650px; margin: 0 auto; padding: 30px 20px 100px; 
-            line-height: 1.8; font-size: 1.2rem; min-height: 100vh;
+            max-width: 650px; margin: 0 auto; padding: 20px 15px 100px; 
+            line-height: 1.8; font-size: 1.15rem; min-height: 100vh;
             transition: background-color 0.4s ease, color 0.4s ease, font-size 0.3s ease;
         }
         
         .reader-hint { background: rgba(198, 166, 103, 0.1); border: 1px dashed var(--gold); padding: 12px; border-radius: 10px; font-size: 0.8rem; text-align: center; margin-bottom: 30px; color: var(--gold); font-style: italic; }
 
-        .tool-btn { background: #1a1a1a; border: 1.5px solid var(--gold); color: var(--gold); padding: 8px 12px; cursor: pointer; font-size: 0.7rem; font-family: 'Montserrat'; text-transform: uppercase; border-radius: 8px; font-weight: 800; transition: 0.2s; }
+        .tool-btn { 
+            background: #1a1a1a; 
+            border: 1px solid var(--gold); 
+            color: var(--gold); 
+            padding: 8px 10px; 
+            cursor: pointer; 
+            font-size: 0.65rem; 
+            font-family: 'Montserrat'; 
+            text-transform: uppercase; 
+            border-radius: 6px; 
+            font-weight: 800; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .tool-btn:active, .tool-btn.active { background: var(--gold); color: #000; }
-
-        .btn-download { background: var(--gold) !important; color: #000 !important; border: none !important; margin-top: 10px; padding: 10px 15px !important; }
+        .btn-download { background: var(--gold) !important; color: #000 !important; border: none !important; margin: 10px auto; padding: 12px 20px !important; display: block; width: fit-content; }
 
         /* Темы */
         .theme-paper { background-color: #f4f1ea !important; color: #1a1a1a !important; }
@@ -137,24 +162,18 @@
         /* ОКНО КОММЕНТАРИЕВ */
         #comments-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; }
         .comm-wrapper { display: flex; flex-direction: column; height: 100%; max-width: 600px; margin: 0 auto; background: #080808; }
-        
         .comm-header { padding: 20px; border-bottom: 1px solid #222; color: var(--gold); font-family: 'Playfair Display'; display: flex; justify-content: space-between; align-items: center; }
         .comm-list { flex: 1; overflow-y: auto; padding: 15px; }
         .comm-item { background: #121212; padding: 15px; margin-bottom: 12px; border-radius: 12px; border-left: 4px solid var(--gold); position: relative; }
-        
         .react-bar { display: flex; gap: 8px; margin-top: 10px; }
         .react-btn { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; }
-
         .comm-input-area { padding: 20px; background: #111; border-top: 1px solid #222; padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
         #commInput { width: 100%; background: #000; border: 1px solid #444; color: #fff; padding: 15px; border-radius: 12px; box-sizing: border-box; outline: none; margin-bottom: 12px; font-family: 'Lora'; font-size: 1rem; }
-        
         .comm-btns { display: flex; gap: 10px; }
         .btn-send { flex: 2; background: var(--gold); color: #000; border: none; padding: 15px; border-radius: 10px; font-weight: 900; font-family: 'Montserrat'; text-transform: uppercase; }
         .btn-close { flex: 1; background: #222; color: #fff; border: none; padding: 15px; border-radius: 10px; font-weight: bold; }
-
         .del-btn { color: #ff4444; background: none; border: none; font-size: 0.7rem; float: right; cursor: pointer; font-weight: bold; }
-
-        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 12px 25px; border-radius: 50px; font-size: 0.8rem; display: none; z-index: 30000; font-weight: bold; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        #toast { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 10px 20px; border-radius: 50px; font-size: 0.75rem; display: none; z-index: 30000; font-weight: bold; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
@@ -171,7 +190,7 @@
 
 <div id="main-ui">
     <div class="hero">
-        <div class="hero-title">ПРИЧУДЛИВЫЕ АВАНТЮРЫ ГОСПОДИНА ЭМИЛЯ ГИЕНОВИЧА</div>
+        <div class="hero-title">ПРИЧУДЛИВЫЕ АВАНТЮРЫ ЭМИЛЯ ГИЕНОВИЧА</div>
         <div class="hero-subtitle">ЭМИЛЬ СТЭТХЭМ</div>
         
         <div class="quote-box" onclick="getEmilQuote()">
@@ -181,12 +200,12 @@
         </div>
 
         <div style="margin-top: 25px;">
-            <button class="tool-btn" onclick="openComments('global')" style="padding: 12px 30px;">💬 ОБЩИЙ ЧАТ</button>
+            <button class="tool-btn" onclick="openComments('global')" style="padding: 12px 30px; font-size: 0.8rem;">💬 ОБЩИЙ ЧАТ</button>
         </div>
     </div>
 
     <div class="search-container">
-        <input type="text" id="chapterSearch" placeholder="Поиск главы по названию или номеру..." oninput="renderVolumes()">
+        <input type="text" id="chapterSearch" placeholder="Поиск главы..." oninput="renderVolumes()">
     </div>
     
     <div class="container" id="volumes-container"></div>
@@ -194,13 +213,16 @@
 
 <div id="reader" onscroll="onReaderScroll()">
     <div class="toolbar" id="topBar">
-        <button class="tool-btn" onclick="closeBook()">← МЕНЮ</button>
-        <div style="display: flex; gap: 5px;">
-            <button class="tool-btn" id="autoscrollBtn" onclick="toggleAutoscroll()">🚀</button>
-            <button class="tool-btn" onclick="changeSize(2)">A+</button>
-            <button class="tool-btn" onclick="changeSize(-2)">A-</button>
+        <div style="display: flex; gap: 5px; width: 100%; justify-content: space-between;">
+            <button class="tool-btn" onclick="closeBook()">←</button>
+            <div style="display: flex; gap: 4px;">
+                <button class="tool-btn" id="ttsBtn" onclick="toggleTTS()">🎙️</button>
+                <button class="tool-btn" id="autoscrollBtn" onclick="toggleAutoscroll()">🚀</button>
+                <button class="tool-btn" onclick="changeSize(2)">A+</button>
+                <button class="tool-btn" onclick="changeSize(-2)">A-</button>
+            </div>
         </div>
-        <div style="display: flex; gap: 5px;">
+        <div style="display: flex; gap: 5px; justify-content: center; width: 100%; border-top: 1px solid #222; padding-top: 5px;">
             <button class="tool-btn" onclick="applyTheme('paper')">📜</button>
             <button class="tool-btn" onclick="applyTheme('sepia')">☕</button>
             <button class="tool-btn" onclick="applyTheme('dark')">🌘</button>
@@ -210,24 +232,22 @@
 
     <div class="book-content theme-dark" id="textContent">
         <div style="text-align: center; margin-bottom: 20px;">
-            <h1 id="innerNum" style="color:var(--gold); font-family: 'Playfair Display'; margin:0; font-size: 2rem;"></h1>
-            <p id="innerTitle" style="font-style: italic; opacity: 0.6; margin-top: 5px;"></p>
+            <h1 id="innerNum" style="color:var(--gold); font-family: 'Playfair Display'; margin:0; font-size: 1.8rem;"></h1>
+            <p id="innerTitle" style="font-style: italic; opacity: 0.6; margin-top: 5px; font-size: 0.9rem;"></p>
         </div>
 
         <div class="reader-hint">
-            Напоминание: обсудить и оценить этот шедевр можно в самом конце главы ✨
-            <br>
-            <button class="tool-btn btn-download" onclick="downloadChapter()">📥 СКАЧАТЬ ЭТУ ГЛАВУ (.txt)</button>
+            <button class="tool-btn btn-download" onclick="downloadChapter()">📥 СКАЧАТЬ ГЛАВУ (.txt)</button>
         </div>
 
         <div id="chapterBody"></div>
         
         <div style="margin-top: 60px; display: flex; flex-direction: column; align-items: center; gap: 20px; border-top: 1px double var(--gold); padding-top: 40px;">
-            <div style="color:var(--gold); font-size: 0.8rem; font-weight: bold; letter-spacing: 2px;">ОЦЕНИТЕ ГЛАВУ</div>
+            <div style="color:var(--gold); font-size: 0.8rem; font-weight: bold; letter-spacing: 2px;">ОЦЕНИТЕ ШЕДЕВР</div>
             <div style="display: flex; gap: 15px;">
-                <button class="react-btn" style="padding: 10px 20px; font-size: 1rem;" onclick="addChapReact('🔥')">🔥 <span id="v-🔥">0</span></button>
-                <button class="react-btn" style="padding: 10px 20px; font-size: 1rem;" onclick="addChapReact('👏')">👏 <span id="v-👏">0</span></button>
-                <button class="react-btn" style="padding: 10px 20px; font-size: 1rem;" onclick="addChapReact('🤣')">🤣 <span id="v-🤣">0</span></button>
+                <button class="react-btn" style="padding: 10px 20px; font-size: 1.2rem;" onclick="addChapReact('🔥')">🔥 <span id="v-🔥">0</span></button>
+                <button class="react-btn" style="padding: 10px 20px; font-size: 1.2rem;" onclick="addChapReact('👏')">👏 <span id="v-👏">0</span></button>
+                <button class="react-btn" style="padding: 10px 20px; font-size: 1.2rem;" onclick="addChapReact('🤣')">🤣 <span id="v-🤣">0</span></button>
             </div>
             <button class="tool-btn" style="padding: 18px; width: 100%; font-size: 0.9rem;" id="chapterCommBtn">💬 ОБСУДИТЬ ГЛАВУ</button>
             <div style="display: flex; gap: 10px; width: 100%;">
@@ -339,20 +359,45 @@
     let currentId = 1;
     let autoScrollInterval = null;
 
-    // ФУНКЦИЯ 4: ПОДЕЛИТЬСЯ МУДРОСТЬЮ
+    // --- ОЗВУЧКА ТЕКСТА (TTS) ---
+    let synth = window.speechSynthesis;
+    let ttsActive = false;
+    let utterance = null;
+
+    function toggleTTS() {
+        const btn = document.getElementById('ttsBtn');
+        if (ttsActive) {
+            synth.cancel();
+            ttsActive = false;
+            btn.classList.remove('active');
+            showToast("Озвучка остановлена");
+        } else {
+            const text = document.getElementById('chapterBody').innerText;
+            utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ru-RU';
+            utterance.rate = 1.0;
+            
+            utterance.onend = () => {
+                ttsActive = false;
+                btn.classList.remove('active');
+            };
+
+            synth.speak(utterance);
+            ttsActive = true;
+            btn.classList.add('active');
+            showToast("Голос Эмиля вещает...");
+        }
+    }
+
     function shareQuote(e) {
         e.stopPropagation();
         const text = document.getElementById('emil-quote').innerText;
         const fullText = `«${text}»\n\n— Эмиль Гиенович, "Причудливые авантюры"`;
-        
         navigator.clipboard.writeText(fullText).then(() => {
             showToast("База скопирована в буфер! 📋");
-        }).catch(() => {
-            showToast("Ошибка копирования");
         });
     }
 
-    // УДОБНАЯ ФУНКЦИЯ: АВТО-СКРОЛЛ
     function toggleAutoscroll() {
         const btn = document.getElementById('autoscrollBtn');
         if (autoScrollInterval) {
@@ -363,33 +408,25 @@
         } else {
             btn.classList.add('active');
             showToast("Авто-скролл: Взлетаем! 🚀");
-            autoScrollInterval = setInterval(() => {
-                reader.scrollBy(0, 1);
-            }, 30); // Скорость прокрутки
+            autoScrollInterval = setInterval(() => { reader.scrollBy(0, 1); }, 35);
         }
     }
 
-    // МУЗЫКА
     function toggleMusic() {
         if (audio.paused) {
             audio.play();
             document.getElementById('musicIcon').innerText = '⏸️';
             musicBtn.classList.add('music-playing');
-            showToast("Музыка включена 🎵");
         } else {
             audio.pause();
             document.getElementById('musicIcon').innerText = '🎵';
             musicBtn.classList.remove('music-playing');
-            showToast("Музыка выключена");
         }
     }
 
-    // УМНАЯ ТЕМА
     function autoTheme() {
         const hour = new Date().getHours();
-        if (hour >= 21 || hour < 6) {
-            applyTheme('night');
-        }
+        if (hour >= 21 || hour < 6) applyTheme('night');
     }
 
     const quotes = [
@@ -416,6 +453,7 @@
     function setP(id, perc, pos) { localStorage.setItem(`p_v11_${id}`, JSON.stringify({perc, pos})); }
 
     function openChapter(id) {
+        if(ttsActive) toggleTTS(); // Выключаем звук при смене главы
         currentId = id;
         const ch = bookData.find(c => c.id === id);
         if(!ch) return;
@@ -428,19 +466,20 @@
         document.body.style.overflow = 'hidden';
         const saved = getP(id);
         setTimeout(() => { reader.scrollTop = saved.pos; }, 50);
-        autoTheme(); 
     }
 
+    // --- ФИКС КРАКОЗЯБР (Добавляем UTF-8 BOM) ---
     function downloadChapter() {
         const ch = bookData.find(c => c.id === currentId);
         if(!ch) return;
         const fileText = `ЭМИЛЬ ГИЕНОВИЧ\nГлава ${ch.id}: ${ch.title}\n\n${ch.content}`;
-        const blob = new Blob([fileText], { type: 'text/plain' });
+        // "\ufeff" - это Byte Order Mark для UTF-8, чтобы Windows открывал файл без косяков
+        const blob = new Blob(["\ufeff", fileText], { type: 'text/plain;charset=utf-8' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
         link.download = `Glava_${ch.id}.txt`;
         link.click();
-        showToast("Файл скачан 📥");
+        showToast("Файл скачан (UTF-8) 📥");
     }
 
     function onReaderScroll() {
@@ -454,10 +493,8 @@
         const content = document.getElementById('textContent');
         const toolbar = document.getElementById('topBar');
         content.className = `book-content theme-${t}`;
-        if(t === 'paper') toolbar.style.background = '#f4f1ea';
-        else if(t === 'sepia') toolbar.style.background = '#2b2520';
-        else if(t === 'night') toolbar.style.background = '#030303';
-        else toolbar.style.background = '#0d0d0d';
+        const colors = { paper: '#f4f1ea', sepia: '#2b2520', night: '#030303', dark: '#0d0d0d' };
+        toolbar.style.background = colors[t] || colors.dark;
     }
 
     function changeSize(d) {
@@ -468,6 +505,7 @@
 
     function closeBook() { 
         if(autoScrollInterval) toggleAutoscroll();
+        if(ttsActive) toggleTTS();
         reader.style.display = 'none'; 
         document.body.style.overflow = 'auto'; 
         renderVolumes(); 
@@ -481,41 +519,21 @@
         const cont = document.getElementById('volumes-container');
         const searchTerm = document.getElementById('chapterSearch').value.toLowerCase();
         cont.innerHTML = '';
-        
-        const vols = [
-            { t: "Том I: Черти и Шакалы", r: [1, 22] }, 
-            { t: "Том II: Адское путешествие", r: [23, 100] }
-        ];
+        const vols = [{ t: "Том I: Черти и Шакалы", r: [1, 22] }, { t: "Том II: Адское путешествие", r: [23, 100] }];
 
         vols.forEach(v => {
-            const chs = bookData.filter(c => 
-                c.id >= v.r[0] && c.id <= v.r[1] && 
-                (c.title.toLowerCase().includes(searchTerm) || c.id.toString().includes(searchTerm))
-            );
-
+            const chs = bookData.filter(c => c.id >= v.r[0] && c.id <= v.r[1] && (c.title.toLowerCase().includes(searchTerm) || c.id.toString().includes(searchTerm)));
             if (chs.length > 0) {
                 const completedCount = chs.filter(ch => getP(ch.id).perc >= 98).length;
                 const sec = document.createElement('div');
-                sec.innerHTML = `
-                    <div class="volume-header">
-                        <h2>${v.t}</h2>
-                        <div class="volume-line"></div>
-                        <div class="volume-stats">${completedCount}/${chs.length}</div>
-                    </div>
-                    <div class="chapters-grid"></div>`;
-                
+                sec.innerHTML = `<div class="volume-header"><h2>${v.t}</h2><div class="volume-line"></div><div class="volume-stats">${completedCount}/${chs.length}</div></div><div class="chapters-grid"></div>`;
                 const grid = sec.querySelector('.chapters-grid');
                 chs.forEach(ch => {
                     const p = getP(ch.id);
                     const card = document.createElement('div');
                     card.className = `chapter-card ${p.perc >= 98 ? 'completed' : ''}`;
                     card.onclick = () => openChapter(ch.id);
-                    card.innerHTML = `
-                        <div>
-                            <div style="font-family:'Montserrat'; font-weight:800; font-size:0.6rem; color:var(--gold);">ГЛАВА ${ch.id}</div>
-                            <div class="ch-name">${ch.title}</div>
-                        </div>
-                        <div style="font-size:0.55rem; opacity:0.5; margin-top:10px;">${p.perc >= 98 ? '✅' : p.perc + '%'}</div>`;
+                    card.innerHTML = `<div><div style="font-family:'Montserrat'; font-weight:800; font-size:0.6rem; color:var(--gold);">ГЛАВА ${ch.id}</div><div class="ch-name">${ch.title}</div></div><div style="font-size:0.55rem; opacity:0.5; margin-top:10px;">${p.perc >= 98 ? '✅' : p.perc + '%'}</div>`;
                     grid.appendChild(card);
                 });
                 cont.appendChild(sec);
@@ -523,11 +541,7 @@
         });
     }
 
-    window.onload = () => {
-        renderVolumes();
-        getEmilQuote();
-        autoTheme();
-    };
+    window.onload = () => { renderVolumes(); getEmilQuote(); autoTheme(); };
 </script>
 </body>
 </html>
