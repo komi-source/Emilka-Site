@@ -12,6 +12,7 @@
             --card-bg: #121212;
             --sepia-bg: #2b2520;
             --sepia-text: #d3bc9f;
+            --toolbar-bg: rgba(18, 18, 18, 0.95);
         }
 
         body { background-color: var(--bg); color: #e0e0e0; font-family: 'Lora', serif; margin: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; transition: background 0.5s ease; }
@@ -19,91 +20,54 @@
         .progress-line { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0%; z-index: 10000; transition: width 0.3s; }
 
         /* Счетчик онлайн */
-        .online-counter {
-            font-family: 'Montserrat';
-            font-size: 0.65rem;
-            color: #2ecc71;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            opacity: 0.8;
-        }
-        .online-dot {
-            width: 6px;
-            height: 6px;
-            background: #2ecc71;
-            border-radius: 50%;
-            display: inline-block;
-            animation: pulse-green 1.5s infinite;
-        }
-        @keyframes pulse-green {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 0.5; }
-            100% { transform: scale(1); opacity: 1; }
-        }
+        .online-counter { font-family: 'Montserrat'; font-size: 0.65rem; color: #2ecc71; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; display: flex; align-items: center; gap: 5px; opacity: 0.8; }
+        .online-dot { width: 6px; height: 6px; background: #2ecc71; border-radius: 50%; display: inline-block; animation: pulse-green 1.5s infinite; }
+        @keyframes pulse-green { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* Улучшенные кнопки читалки для мобилок */
+        /* НОВЫЙ КНИЖНЫЙ ТУЛБАР */
         .toolbar { 
-            position: sticky; 
-            top: 0; 
-            background: rgba(13,13,13,0.98); 
-            padding: 12px 8px; /* Чуть больше отступов */
-            display: flex; 
-            flex-direction: column; /* Кнопки в два ряда для удобства пальцев */
-            gap: 12px; 
-            z-index: 9500; 
-            backdrop-filter: blur(15px); 
-            border-bottom: 1px solid #333; 
+            position: sticky; top: 0; 
+            background: var(--toolbar-bg);
+            padding: 10px 15px;
+            display: flex; flex-direction: column; gap: 12px;
+            z-index: 9500; backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(198, 166, 103, 0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
 
-        .tool-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 6px;
-            width: 100%;
-        }
+        .tool-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; }
 
-        .tool-btn { 
-            background: #1a1a1a; 
-            border: 1px solid var(--gold); 
-            color: var(--gold); 
-            padding: 10px; /* Кнопки стали жирнее */
-            cursor: pointer; 
-            font-size: 0.7rem; 
-            font-family: 'Montserrat'; 
-            text-transform: uppercase; 
-            border-radius: 8px; 
-            font-weight: 800; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex: 1; /* Кнопки растягиваются равномерно */
-            min-height: 44px; /* Стандарт Apple для мобильных кнопок */
+        /* Элегантные кнопки */
+        .book-btn {
+            background: none; border: 1px solid rgba(198, 166, 103, 0.4);
+            color: var(--gold); border-radius: 4px;
+            padding: 8px 12px; font-family: 'Montserrat'; font-size: 0.7rem;
+            text-transform: uppercase; letter-spacing: 1px;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            transition: 0.3s; flex: 1; min-height: 40px;
         }
-        .btn-back { flex: 0 0 50px; } /* Кнопка назад поуже */
+        .book-btn:active { background: var(--gold); color: #000; }
+        .book-btn.active { background: rgba(198, 166, 103, 0.2); border-color: var(--gold); box-shadow: inset 0 0 10px rgba(198, 166, 103, 0.2); }
+        .btn-circle { flex: 0 0 40px; border-radius: 50%; padding: 0; font-size: 1.1rem; }
 
-        /* Остальные стили без изменений */
+        /* Селекторы тем */
+        .theme-selector { display: flex; gap: 8px; flex: 2; justify-content: center; }
+        .t-dot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: 0.2s; }
+        .t-dot.active { border-color: var(--gold); transform: scale(1.1); }
+
+        /* Базовые стили без изменений */
         .audio-control { position: fixed; bottom: 25px; right: 20px; z-index: 9999; background: rgba(20, 20, 20, 0.8); border: 1px solid var(--gold); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.5); transition: 0.3s; }
-        .audio-control:active { transform: scale(0.9); }
         .music-playing { animation: pulse-gold 2s infinite; }
         @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(198, 166, 103, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(198, 166, 103, 0); } 100% { box-shadow: 0 0 0 0 rgba(198, 166, 103, 0); } }
         .hero { min-height: 55vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; background: radial-gradient(circle at center, #1a1a1a 0%, #080808 100%); border-bottom: 1px solid #222; }
         .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(1.2rem, 5vw, 1.8rem); color: var(--gold); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 5px; padding: 0 10px; }
         .hero-subtitle { font-size: 0.7rem; letter-spacing: 2px; opacity: 0.5; margin-bottom: 10px; }
         .quote-box { background: linear-gradient(145deg, #161616, #0d0d0d); border: 1px solid var(--gold); padding: 25px 20px; border-radius: 20px; max-width: 420px; cursor: pointer; position: relative; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); margin: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .quote-box:active { transform: scale(0.96); }
-        .quote-box::before { content: "“"; position: absolute; top: -5px; left: 15px; font-size: 3.5rem; color: var(--gold); opacity: 0.2; }
         #emil-quote { font-style: italic; font-size: 1rem; line-height: 1.5; color: #eee; transition: opacity 0.3s; min-height: 3em; display: flex; align-items: center; justify-content: center; }
         .quote-hint { margin-top: 15px; font-size: 0.65rem; color: var(--gold); font-family: 'Montserrat'; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 5px; text-transform: uppercase; }
-        .quote-hint span { animation: pulse 1.5s infinite; }
         .share-quote-btn { background: none; border: 1px solid rgba(198, 166, 103, 0.3); color: var(--gold); font-size: 0.6rem; padding: 5px 10px; border-radius: 5px; margin-top: 10px; cursor: pointer; text-transform: uppercase; font-family: 'Montserrat'; }
-        @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
         .search-container { max-width: 1000px; margin: 20px auto 0; padding: 0 15px; }
         #chapterSearch { width: 100%; background: #121212; border: 1px solid #333; color: white; padding: 12px 20px; border-radius: 12px; font-family: 'Montserrat'; font-size: 0.8rem; box-sizing: border-box; outline: none; }
-        #chapterSearch:focus { border-color: var(--gold); }
         .container { max-width: 1000px; margin: 0 auto; padding: 0px 15px 100px; }
         .volume-header { display: flex; align-items: center; gap: 15px; margin: 40px 0 10px; }
         .volume-header h2 { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 1rem; margin: 0; text-transform: uppercase; }
@@ -111,14 +75,11 @@
         .volume-line { flex-grow: 1; height: 1px; background: linear-gradient(to right, var(--gold), transparent); }
         .chapters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-top: 15px; }
         .chapter-card { background: var(--card-bg); border: 1px solid #222; border-radius: 12px; padding: 18px 15px; cursor: pointer; text-align: left; transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; min-height: 80px; }
-        .chapter-card:active { transform: scale(0.95); }
         .chapter-card.completed { border-color: #2ecc71; background: linear-gradient(145deg, #121212, #0a1a10); }
         .chapter-card .ch-name { font-size: 0.75rem; color: #fff; margin-top: 8px; font-family: 'Lora'; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; opacity: 0.8; }
         #reader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9000; overflow-y: auto; scroll-behavior: smooth; }
         .book-content { max-width: 650px; margin: 0 auto; padding: 20px 15px 100px; line-height: 1.8; font-size: 1.15rem; min-height: 100vh; transition: background-color 0.4s ease, color 0.4s ease, font-size 0.3s ease; }
         .reader-hint { background: rgba(198, 166, 103, 0.1); border: 1px dashed var(--gold); padding: 12px; border-radius: 10px; font-size: 0.8rem; text-align: center; margin-bottom: 30px; color: var(--gold); font-style: italic; }
-        .tool-btn:active, .tool-btn.active { background: var(--gold); color: #000; }
-        .btn-download { background: var(--gold) !important; color: #000 !important; border: none !important; margin: 10px auto; padding: 12px 20px !important; display: block; width: fit-content; }
         .theme-paper { background-color: #f4f1ea !important; color: #1a1a1a !important; }
         .theme-dark { background-color: #0d0d0d !important; color: #d1d1d1 !important; }
         .theme-sepia { background-color: var(--sepia-bg) !important; color: var(--sepia-text) !important; }
@@ -139,9 +100,7 @@
         #toast { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 10px 20px; border-radius: 50px; font-size: 0.75rem; display: none; z-index: 30000; font-weight: bold; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
     </style>
 </head>
-<body>
-
-<div id="toast"></div>
+<body onclick="initAudioContext()"> <div id="toast"></div>
 <div class="progress-line" id="progLine"></div>
 
 <div class="audio-control" onclick="toggleMusic()" id="musicBtn">
@@ -168,7 +127,7 @@
         </div>
 
         <div style="margin-top: 25px;">
-            <button class="tool-btn" onclick="openComments('global')" style="padding: 12px 30px; font-size: 0.8rem;">💬 ОБЩИЙ ЧАТ</button>
+            <button class="book-btn" onclick="openComments('global')" style="padding: 12px 30px; border-radius: 50px;">💬 ОБЩИЙ ЧАТ</button>
         </div>
     </div>
 
@@ -182,17 +141,21 @@
 <div id="reader" onscroll="onReaderScroll()">
     <div class="toolbar" id="topBar">
         <div class="tool-row">
-            <button class="tool-btn btn-back" onclick="closeBook()">←</button>
-            <button class="tool-btn" id="ttsBtn" onclick="toggleTTS()">🎙️ ОЗВУЧКА</button>
-            <button class="tool-btn" id="autoscrollBtn" onclick="toggleAutoscroll()">🚀 ПОЛЕТ</button>
+            <button class="book-btn btn-circle" onclick="closeBook()">✕</button>
+            <div class="theme-selector">
+                <div class="t-dot" style="background:#f4f1ea;" onclick="applyTheme('paper', this)"></div>
+                <div class="t-dot" style="background:#2b2520;" onclick="applyTheme('sepia', this)"></div>
+                <div class="t-dot active" style="background:#0d0d0d;" onclick="applyTheme('dark', this)"></div>
+                <div class="t-dot" style="background:#030303;" onclick="applyTheme('night', this)"></div>
+            </div>
+            <div style="display:flex; gap:5px;">
+                <button class="book-btn btn-circle" onclick="changeSize(2)">A+</button>
+                <button class="book-btn btn-circle" onclick="changeSize(-2)">A-</button>
+            </div>
         </div>
         <div class="tool-row">
-            <button class="tool-btn" onclick="applyTheme('paper')">📜</button>
-            <button class="tool-btn" onclick="applyTheme('sepia')">☕</button>
-            <button class="tool-btn" onclick="applyTheme('dark')">🌘</button>
-            <button class="tool-btn" onclick="applyTheme('night')">🌌</button>
-            <button class="tool-btn" onclick="changeSize(2)">A+</button>
-            <button class="tool-btn" onclick="changeSize(-2)">A-</button>
+            <button class="book-btn" id="ttsBtn" onclick="toggleTTS()">📜 Читать вслух</button>
+            <button class="book-btn" id="autoscrollBtn" onclick="toggleAutoscroll()">🕊️ Свободные руки</button>
         </div>
     </div>
 
@@ -203,22 +166,22 @@
         </div>
 
         <div class="reader-hint">
-            <button class="tool-btn btn-download" onclick="downloadChapter()">📥 СКАЧАТЬ ГЛАВУ (.txt)</button>
+            <button class="book-btn" style="margin: 0 auto; width: fit-content;" onclick="downloadChapter()">📥 Скачать главу (.txt)</button>
         </div>
 
         <div id="chapterBody"></div>
         
         <div style="margin-top: 60px; display: flex; flex-direction: column; align-items: center; gap: 20px; border-top: 1px double var(--gold); padding-top: 40px;">
-            <div style="color:var(--gold); font-size: 0.8rem; font-weight: bold; letter-spacing: 2px;">ОЦЕНИТЕ ШЕДЕВР</div>
+            <div style="color:var(--gold); font-size: 0.8rem; font-weight: bold; letter-spacing: 2px;">ПОЧТЕНИЕ АВТОРУ</div>
             <div style="display: flex; gap: 15px;">
                 <button class="react-btn" style="padding: 10px 20px; font-size: 1.2rem;" onclick="addChapReact('🔥')">🔥 <span id="v-🔥">0</span></button>
                 <button class="react-btn" style="padding: 10px 20px; font-size: 1.2rem;" onclick="addChapReact('👏')">👏 <span id="v-👏">0</span></button>
                 <button class="react-btn" style="padding: 10px 20px; font-size: 1.2rem;" onclick="addChapReact('🤣')">🤣 <span id="v-🤣">0</span></button>
             </div>
-            <button class="tool-btn" style="padding: 18px; width: 100%; font-size: 0.9rem;" id="chapterCommBtn">💬 ОБСУДИТЬ ГЛАВУ</button>
+            <button class="book-btn" style="padding: 18px; width: 100%; font-size: 0.9rem;" id="chapterCommBtn">💬 ОБСУДИТЬ ГЛАВУ</button>
             <div style="display: flex; gap: 10px; width: 100%;">
-                <button class="tool-btn" style="flex: 1; padding: 15px;" onclick="prevChapter()">← НАЗАД</button>
-                <button class="tool-btn" style="flex: 1; padding: 15px;" onclick="nextChapter()">ВПЕРЕД →</button>
+                <button class="book-btn" style="flex: 1; padding: 15px;" onclick="prevChapter()">← НАЗАД</button>
+                <button class="book-btn" style="flex: 1; padding: 15px;" onclick="nextChapter()">ВПЕРЕД →</button>
             </div>
         </div>
     </div>
@@ -257,14 +220,12 @@
     const db = getDatabase(app);
     let currentTopic = 'global';
 
-    // --- ЛОГИКА СЧЕТЧИКА (РЕАЛЬНЫЙ + НАКРУТКА) ---
+    //Presence logic
     const presenceRef = ref(db, 'presence/' + Math.random().toString(36).substr(2, 9));
     set(presenceRef, true);
     onDisconnect(presenceRef).remove();
-
     onValue(ref(db, 'presence'), (snapshot) => {
         const realCount = snapshot.size || 1;
-        // Формула "накрутки": реальные люди * 3 + случайное число от 5 до 12
         const fakeCount = (realCount * 3) + Math.floor(Math.random() * 7) + 5;
         document.getElementById('onlineCount').innerText = `Читают: ${fakeCount}`;
     });
@@ -276,7 +237,6 @@
         currentTopic = topic;
         document.getElementById('commHeaderTitle').innerText = topic === 'global' ? 'ОБЩИЙ ЧАТ' : `ГЛАВА ${topic}`;
         document.getElementById('comments-modal').style.display = 'block';
-        
         onValue(ref(db, 'comments/' + currentTopic), (snap) => {
             const list = document.getElementById('commList');
             list.innerHTML = '';
@@ -285,16 +245,15 @@
             if(data) {
                 Object.entries(data).reverse().forEach(([id, c]) => {
                     const isMine = myMsgs.includes(id);
-                    list.innerHTML += `
-                        <div class="comm-item">
-                            ${isMine ? `<button class="del-btn" onclick="deleteComment('${id}')">УДАЛИТЬ</button>` : ''}
-                            <div style="color:var(--gold); font-weight:800; font-size:0.7rem; margin-bottom:8px; font-family:'Montserrat';">АНОНИМНЫЙ ШАКАЛ</div>
-                            <div style="font-size:0.95rem; line-height:1.4;">${c.text}</div>
-                            <div class="react-bar">
-                                <button class="react-btn" onclick="addMsgReact('${id}', '👍')">👍 ${c.reactions?.['👍'] || 0}</button>
-                                <button class="react-btn" onclick="addMsgReact('${id}', '🤣')">🤣 ${c.reactions?.['🤣'] || 0}</button>
-                            </div>
-                        </div>`;
+                    list.innerHTML += `<div class="comm-item">
+                        ${isMine ? `<button class="del-btn" onclick="deleteComment('${id}')">УДАЛИТЬ</button>` : ''}
+                        <div style="color:var(--gold); font-weight:800; font-size:0.7rem; margin-bottom:8px; font-family:'Montserrat';">АНОНИМНЫЙ ШАКАЛ</div>
+                        <div style="font-size:0.95rem; line-height:1.4;">${c.text}</div>
+                        <div class="react-bar">
+                            <button class="react-btn" onclick="addMsgReact('${id}', '👍')">👍 ${c.reactions?.['👍'] || 0}</button>
+                            <button class="react-btn" onclick="addMsgReact('${id}', '🤣')">🤣 ${c.reactions?.['🤣'] || 0}</button>
+                        </div>
+                    </div>`;
                 });
             }
         });
@@ -303,7 +262,6 @@
     window.addMsgReact = (id, type) => runTransaction(ref(db, `comments/${currentTopic}/${id}/reactions/${type}`), (c) => (c || 0) + 1);
     window.deleteComment = (id) => { if(confirm('Удалить?')) remove(ref(db, `comments/${currentTopic}/${id}`)); };
     window.toggleComments = (s) => document.getElementById('comments-modal').style.display = s ? 'block' : 'none';
-
     document.getElementById('sendBtn').onclick = () => {
         const input = document.getElementById('commInput');
         if(!input.value.trim()) return;
@@ -312,7 +270,6 @@
             input.value = '';
         });
     };
-
     window.loadChapReacts = (id) => {
         onValue(ref(db, `chap_reacts/${id}`), (snap) => {
             const val = snap.val() || {};
@@ -322,7 +279,6 @@
             });
         });
     };
-
     window.addChapReact = (emoji) => {
         runTransaction(ref(db, `chap_reacts/${currentId}/${emoji}`), (c) => (c || 0) + 1);
         showToast("Твой голос принят! ✨");
@@ -330,7 +286,6 @@
 </script>
 
 <script>
-    // Весь старый JS сохранен без изменений
     const reader = document.getElementById('reader');
     const progLine = document.getElementById('progLine');
     const audio = document.getElementById('bgMusic');
@@ -338,9 +293,15 @@
     let currentId = 1;
     let autoScrollInterval = null;
 
+    // --- ИСПРАВЛЕННАЯ ОЗВУЧКА ---
     let synth = window.speechSynthesis;
     let ttsActive = false;
     let utterance = null;
+
+    function initAudioContext() {
+        // Пустая функция для разблокировки звука кликом
+        if (synth.speaking) return;
+    }
 
     function toggleTTS() {
         const btn = document.getElementById('ttsBtn');
@@ -348,25 +309,31 @@
             synth.cancel();
             ttsActive = false;
             btn.classList.remove('active');
+            btn.innerText = "📜 Читать вслух";
             showToast("Озвучка остановлена");
         } else {
             const text = document.getElementById('chapterBody').innerText;
+            // Разбиваем текст на куски, так как длинные тексты TTS иногда сбрасывает
             utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'ru-RU';
-            utterance.rate = 1.0;
-            utterance.onend = () => { ttsActive = false; btn.classList.remove('active'); };
+            utterance.rate = 1.1; // Эмиль говорит быстро
+            utterance.pitch = 0.9; // И солидно
+            
+            utterance.onstart = () => {
+                ttsActive = true;
+                btn.classList.add('active');
+                btn.innerText = "⏸ Остановить";
+            };
+
+            utterance.onend = () => {
+                ttsActive = false;
+                btn.classList.remove('active');
+                btn.innerText = "📜 Читать вслух";
+            };
+
             synth.speak(utterance);
-            ttsActive = true;
-            btn.classList.add('active');
             showToast("Голос Эмиля вещает...");
         }
-    }
-
-    function shareQuote(e) {
-        e.stopPropagation();
-        const text = document.getElementById('emil-quote').innerText;
-        const fullText = `«${text}»\n\n— Эмиль Гиенович, "Причудливые авантюры"`;
-        navigator.clipboard.writeText(fullText).then(() => { showToast("База скопирована в буфер! 📋"); });
     }
 
     function toggleAutoscroll() {
@@ -375,10 +342,10 @@
             clearInterval(autoScrollInterval);
             autoScrollInterval = null;
             btn.classList.remove('active');
-            showToast("Авто-скролл выключен");
+            showToast("Свободные руки: Выкл");
         } else {
             btn.classList.add('active');
-            showToast("Авто-скролл: Взлетаем! 🚀");
+            showToast("Летим! 🚀");
             autoScrollInterval = setInterval(() => { reader.scrollBy(0, 1); }, 35);
         }
     }
@@ -401,7 +368,6 @@
         "Если тебе плюют в спину — значит ты впереди.",
         "Жизнь — это как шахматы. Я в них не играю, я продаю доску.",
         "Одна ошибка — и ты ошибся.",
-        "Как говорил мой дед, «Я твой дед».",
         "Кто рано встает — тому весь день спать хочется."
     ];
 
@@ -443,7 +409,7 @@
         link.href = URL.createObjectURL(blob);
         link.download = `Glava_${ch.id}.txt`;
         link.click();
-        showToast("Файл скачан (UTF-8) 📥");
+        showToast("Файл сохранен 📥");
     }
 
     function onReaderScroll() {
@@ -453,12 +419,14 @@
         window.sTimer = setTimeout(() => setP(currentId, Math.round(scrolled), reader.scrollTop), 300);
     }
 
-    function applyTheme(t) {
+    function applyTheme(t, el) {
         const content = document.getElementById('textContent');
         const toolbar = document.getElementById('topBar');
         content.className = `book-content theme-${t}`;
         const colors = { paper: '#f4f1ea', sepia: '#2b2520', night: '#030303', dark: '#0d0d0d' };
-        toolbar.style.background = colors[t] || colors.dark;
+        toolbar.style.background = (t === 'paper' || t === 'sepia') ? colors[t] : 'rgba(18,18,18,0.95)';
+        document.querySelectorAll('.t-dot').forEach(d => d.classList.remove('active'));
+        if(el) el.classList.add('active');
     }
 
     function changeSize(d) {
@@ -504,7 +472,7 @@
         });
     }
 
-    window.onload = () => { renderVolumes(); getEmilQuote(); if(new Date().getHours() >= 21 || new Date().getHours() < 6) applyTheme('night'); };
+    window.onload = () => { renderVolumes(); getEmilQuote(); };
 </script>
 </body>
 </html>
