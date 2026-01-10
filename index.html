@@ -14,9 +14,32 @@
             --sepia-text: #d3bc9f;
         }
 
-        body { background-color: var(--bg); color: #e0e0e0; font-family: 'Lora', serif; margin: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg); color: #e0e0e0; font-family: 'Lora', serif; margin: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; transition: background 0.5s ease; }
         
         .progress-line { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0%; z-index: 10000; transition: width 0.3s; }
+
+        /* Плавающая кнопка музыки */
+        .audio-control {
+            position: fixed;
+            bottom: 25px;
+            right: 20px;
+            z-index: 9999;
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid var(--gold);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: 0.3s;
+        }
+        .audio-control:active { transform: scale(0.9); }
+        .music-playing { animation: pulse-gold 2s infinite; }
+        @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(198, 166, 103, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(198, 166, 103, 0); } 100% { box-shadow: 0 0 0 0 rgba(198, 166, 103, 0); } }
 
         /* Герой и Цитатник */
         .hero { min-height: 55vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; background: radial-gradient(circle at center, #1a1a1a 0%, #080808 100%); border-bottom: 1px solid #222; }
@@ -88,7 +111,7 @@
 
         /* ЧИТАЛКА */
         #reader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9000; overflow-y: auto; scroll-behavior: smooth; }
-        .toolbar { position: sticky; top: 0; background: rgba(13,13,13,0.95); padding: 10px; display: flex; justify-content: space-between; align-items: center; z-index: 9500; backdrop-filter: blur(10px); border-bottom: 1px solid #222; transition: background 0.4s; }
+        .toolbar { position: sticky; top: 0; background: rgba(13,13,13,0.95); padding: 10px; display: flex; justify-content: space-between; align-items: center; z-index: 9500; backdrop-filter: blur(10px); border-bottom: 1px solid #222; transition: all 0.4s; }
 
         .book-content { 
             max-width: 650px; margin: 0 auto; padding: 30px 20px 100px; 
@@ -107,6 +130,7 @@
         .theme-paper { background-color: #f4f1ea !important; color: #1a1a1a !important; }
         .theme-dark { background-color: #0d0d0d !important; color: #d1d1d1 !important; }
         .theme-sepia { background-color: var(--sepia-bg) !important; color: var(--sepia-text) !important; }
+        .theme-night { background-color: #030303 !important; color: #666 !important; } /* Новая тема */
 
         /* ОКНО КОММЕНТАРИЕВ */
         #comments-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; }
@@ -135,6 +159,13 @@
 
 <div id="toast"></div>
 <div class="progress-line" id="progLine"></div>
+
+<div class="audio-control" onclick="toggleMusic()" id="musicBtn">
+    <span id="musicIcon" style="font-size: 1.2rem;">🎵</span>
+    <audio id="bgMusic" loop>
+        <source src="https://stream.zeno.fm/0r0xa792kwzuv" type="audio/mpeg">
+    </audio>
+</div>
 
 <div id="main-ui">
     <div class="hero">
@@ -169,6 +200,7 @@
             <button class="tool-btn" onclick="applyTheme('paper')">📜</button>
             <button class="tool-btn" onclick="applyTheme('sepia')">☕</button>
             <button class="tool-btn" onclick="applyTheme('dark')">🌘</button>
+            <button class="tool-btn" onclick="applyTheme('night')">🌌</button>
         </div>
     </div>
 
@@ -221,112 +253,117 @@
 
 <script src="chapters.js"></script>
 <script type="module">
-  // Весь блок Firebase остается без изменений
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, push, onValue, remove, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, push, onValue, remove, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDD43BfRt9tkn4k0pgTRuQ7-SCR_PmjR8c",
-    authDomain: "emilka-site.firebaseapp.com",
-    projectId: "emilka-site",
-    databaseURL: "https://emilka-site-default-rtdb.firebaseio.com"
-  };
+    const firebaseConfig = {
+        apiKey: "AIzaSyDD43BfRt9tkn4k0pgTRuQ7-SCR_PmjR8c",
+        authDomain: "emilka-site.firebaseapp.com",
+        projectId: "emilka-site",
+        databaseURL: "https://emilka-site-default-rtdb.firebaseio.com"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  let currentTopic = 'global';
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    let currentTopic = 'global';
 
-  const getMyMsgs = () => JSON.parse(localStorage.getItem('emil_v11_msgs') || '[]');
-  const saveMyMsg = (id) => { const m = getMyMsgs(); m.push(id); localStorage.setItem('emil_v11_msgs', JSON.stringify(m)); };
+    const getMyMsgs = () => JSON.parse(localStorage.getItem('emil_v11_msgs') || '[]');
+    const saveMyMsg = (id) => { const m = getMyMsgs(); m.push(id); localStorage.setItem('emil_v11_msgs', JSON.stringify(m)); };
 
-  window.openComments = function(topic) {
-    currentTopic = topic;
-    document.getElementById('commHeaderTitle').innerText = topic === 'global' ? 'ОБЩИЙ ЧАТ' : `ГЛАВА ${topic}`;
-    document.getElementById('comments-modal').style.display = 'block';
-    
-    onValue(ref(db, 'comments/' + currentTopic), (snap) => {
-        const list = document.getElementById('commList');
-        list.innerHTML = '';
-        const data = snap.val();
-        const myMsgs = getMyMsgs();
-        if(data) {
-            Object.entries(data).reverse().forEach(([id, c]) => {
-                const isMine = myMsgs.includes(id);
-                list.innerHTML += `
-                    <div class="comm-item">
-                        ${isMine ? `<button class="del-btn" onclick="deleteComment('${id}')">УДАЛИТЬ</button>` : ''}
-                        <div style="color:var(--gold); font-weight:800; font-size:0.7rem; margin-bottom:8px; font-family:'Montserrat';">АНОНИМНЫЙ ШАКАЛ</div>
-                        <div style="font-size:0.95rem; line-height:1.4;">${c.text}</div>
-                        <div class="react-bar">
-                            <button class="react-btn" onclick="addMsgReact('${id}', '👍')">👍 ${c.reactions?.['👍'] || 0}</button>
-                            <button class="react-btn" onclick="addMsgReact('${id}', '🤣')">🤣 ${c.reactions?.['🤣'] || 0}</button>
-                        </div>
-                    </div>`;
-            });
-        }
-    });
-  };
-
-  window.addMsgReact = (id, type) => runTransaction(ref(db, `comments/${currentTopic}/${id}/reactions/${type}`), (c) => (c || 0) + 1);
-  window.deleteComment = (id) => { if(confirm('Удалить?')) remove(ref(db, `comments/${currentTopic}/${id}`)); };
-  window.toggleComments = (s) => document.getElementById('comments-modal').style.display = s ? 'block' : 'none';
-
-  document.getElementById('sendBtn').onclick = () => {
-    const input = document.getElementById('commInput');
-    if(!input.value.trim()) return;
-    push(ref(db, 'comments/' + currentTopic), { text: input.value, timestamp: serverTimestamp() }).then(res => {
-        saveMyMsg(res.key);
-        input.value = '';
-    });
-  };
-
-  window.loadChapReacts = (id) => {
-    onValue(ref(db, `chap_reacts/${id}`), (snap) => {
-        const val = snap.val() || {};
-        ['🔥', '👏', '🤣'].forEach(emoji => {
-            const el = document.getElementById(`v-${emoji}`);
-            if(el) el.innerText = val[emoji] || 0;
+    window.openComments = function(topic) {
+        currentTopic = topic;
+        document.getElementById('commHeaderTitle').innerText = topic === 'global' ? 'ОБЩИЙ ЧАТ' : `ГЛАВА ${topic}`;
+        document.getElementById('comments-modal').style.display = 'block';
+        
+        onValue(ref(db, 'comments/' + currentTopic), (snap) => {
+            const list = document.getElementById('commList');
+            list.innerHTML = '';
+            const data = snap.val();
+            const myMsgs = getMyMsgs();
+            if(data) {
+                Object.entries(data).reverse().forEach(([id, c]) => {
+                    const isMine = myMsgs.includes(id);
+                    list.innerHTML += `
+                        <div class="comm-item">
+                            ${isMine ? `<button class="del-btn" onclick="deleteComment('${id}')">УДАЛИТЬ</button>` : ''}
+                            <div style="color:var(--gold); font-weight:800; font-size:0.7rem; margin-bottom:8px; font-family:'Montserrat';">АНОНИМНЫЙ ШАКАЛ</div>
+                            <div style="font-size:0.95rem; line-height:1.4;">${c.text}</div>
+                            <div class="react-bar">
+                                <button class="react-btn" onclick="addMsgReact('${id}', '👍')">👍 ${c.reactions?.['👍'] || 0}</button>
+                                <button class="react-btn" onclick="addMsgReact('${id}', '🤣')">🤣 ${c.reactions?.['🤣'] || 0}</button>
+                            </div>
+                        </div>`;
+                });
+            }
         });
-    });
-  };
+    };
 
-  window.addChapReact = (emoji) => {
-    runTransaction(ref(db, `chap_reacts/${currentId}/${emoji}`), (c) => (c || 0) + 1);
-    showToast("Твой голос принят! ✨");
-  };
+    window.addMsgReact = (id, type) => runTransaction(ref(db, `comments/${currentTopic}/${id}/reactions/${type}`), (c) => (c || 0) + 1);
+    window.deleteComment = (id) => { if(confirm('Удалить?')) remove(ref(db, `comments/${currentTopic}/${id}`)); };
+    window.toggleComments = (s) => document.getElementById('comments-modal').style.display = s ? 'block' : 'none';
+
+    document.getElementById('sendBtn').onclick = () => {
+        const input = document.getElementById('commInput');
+        if(!input.value.trim()) return;
+        push(ref(db, 'comments/' + currentTopic), { text: input.value, timestamp: serverTimestamp() }).then(res => {
+            saveMyMsg(res.key);
+            input.value = '';
+        });
+    };
+
+    window.loadChapReacts = (id) => {
+        onValue(ref(db, `chap_reacts/${id}`), (snap) => {
+            const val = snap.val() || {};
+            ['🔥', '👏', '🤣'].forEach(emoji => {
+                const el = document.getElementById(`v-${emoji}`);
+                if(el) el.innerText = val[emoji] || 0;
+            });
+        });
+    };
+
+    window.addChapReact = (emoji) => {
+        runTransaction(ref(db, `chap_reacts/${currentId}/${emoji}`), (c) => (c || 0) + 1);
+        showToast("Твой голос принят! ✨");
+    };
 </script>
 
 <script>
     const reader = document.getElementById('reader');
     const progLine = document.getElementById('progLine');
+    const audio = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicBtn');
     let currentId = 1;
+
+    // МУЗЫКА
+    function toggleMusic() {
+        if (audio.paused) {
+            audio.play();
+            document.getElementById('musicIcon').innerText = '⏸️';
+            musicBtn.classList.add('music-playing');
+            showToast("Музыка включена 🎵");
+        } else {
+            audio.pause();
+            document.getElementById('musicIcon').innerText = '🎵';
+            musicBtn.classList.remove('music-playing');
+            showToast("Музыка выключена");
+        }
+    }
+
+    // УМНАЯ ТЕМА
+    function autoTheme() {
+        const hour = new Date().getHours();
+        if (hour >= 21 || hour < 6) {
+            applyTheme('night');
+        }
+    }
 
     const quotes = [
         "Волк не тот, кто волк, а тот, кто поел и спит.",
         "Запомни: лучше прийти на 5 минут позже, чем на 50 лет раньше.",
         "Если тебе плюют в спину — значит ты впереди.",
-        "Неважно, кто напротив. Важно, сколько у него в кошельке.",
         "Жизнь — это как шахматы. Я в них не играю, я продаю доску.",
-        "Моя совесть чиста, потому что я ни разу в жизни её не распаковывал.",
-        "Слабые мстят, сильные прощают. Я просто записываю адрес.",
-        "Никогда не сдавайся. Если за тобой гонятся менты — беги еще быстрее.",
         "Одна ошибка — и ты ошибся.",
-        "Если жизнь закрыла перед тобой дверь, лезь в окно.",
-        "Тяжело быть лучшим, когда ты единственный. Но я справляюсь.",
-        "За каждым успешным авантюристом стоит... еще более успешный адвокат.",
-        "Я живу, как карта ляжет. Ты живёшь, как мамка скажет.",
-        "Если заблудился в лесу, иди домой.",
-        "Сила – не в бабках. Ведь бабки – уже старые.",
-        "Настоящий мужчина, как ковёр тёти Зины – с каждым годом лысеет.",
-        "Из проведённых 64-х боёв у меня 64 победы. Все бои были с тенью.",
-        "Никогда не сдавайтесь, идите к своей цели! А если будет сложно – сдавайтесь.",
-        "Делай, как надо. Как не надо, не делай.",
-        "Работа — это не волк. Работа — ворк. А волк — это ходить.",
-        "Марианскую впадину знаешь? Это я упал.",
         "Как говорил мой дед, «Я твой дед».",
-        "Слово — не воробей. Вообще ничто не воробей, кроме самого воробья.",
-        "Если тебе где-то не рады в рваных носках, то и в целых туда идти не стоит.",
-        "Если закрыть глаза, становится темно.",
         "Кто рано встает — тому весь день спать хочется."
     ];
 
@@ -356,21 +393,19 @@
         document.body.style.overflow = 'hidden';
         const saved = getP(id);
         setTimeout(() => { reader.scrollTop = saved.pos; }, 50);
+        autoTheme(); // Проверяем тему при открытии главы
     }
 
     function downloadChapter() {
         const ch = bookData.find(c => c.id === currentId);
         if(!ch) return;
-        const fileName = `Emil_Glava_${ch.id}.txt`;
-        const cleanContent = ch.content.replace(/<[^>]*>/g, '').trim();
-        const fileText = `ПРИЧУДЛИВЫЕ АВАНТЮРЫ ЭМИЛЯ ГИЕНОВИЧА\n\nГлава ${ch.id}: ${ch.title}\n${"=".repeat(30)}\n\n${cleanContent}\n\n${"=".repeat(30)}\nКонец главы.`;
-        const blob = new Blob(['\ufeff', fileText], { type: 'text/plain;charset=utf-8' });
+        const fileText = `ЭМИЛЬ ГИЕНОВИЧ\nГлава ${ch.id}: ${ch.title}\n\n${ch.content}`;
+        const blob = new Blob([fileText], { type: 'text/plain' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = fileName;
+        link.download = `Glava_${ch.id}.txt`;
         link.click();
-        setTimeout(() => URL.revokeObjectURL(link.href), 100);
-        showToast("Глава сохранена корректно! 📂");
+        showToast("Файл скачан 📥");
     }
 
     function onReaderScroll() {
@@ -384,7 +419,10 @@
         const content = document.getElementById('textContent');
         const toolbar = document.getElementById('topBar');
         content.className = `book-content theme-${t}`;
-        toolbar.style.background = (t === 'paper' ? '#f4f1ea' : (t === 'sepia' ? '#2b2520' : '#0d0d0d'));
+        if(t === 'paper') toolbar.style.background = '#f4f1ea';
+        else if(t === 'sepia') toolbar.style.background = '#2b2520';
+        else if(t === 'night') toolbar.style.background = '#030303';
+        else toolbar.style.background = '#0d0d0d';
     }
 
     function changeSize(d) {
@@ -398,7 +436,6 @@
     function prevChapter() { if(currentId > 1) openChapter(currentId - 1); }
     function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2500); }
 
-    // ОБНОВЛЕННЫЙ РЕНДЕР
     function renderVolumes() {
         const cont = document.getElementById('volumes-container');
         const searchTerm = document.getElementById('chapterSearch').value.toLowerCase();
@@ -406,26 +443,23 @@
         
         const vols = [
             { t: "Том I: Черти и Шакалы", r: [1, 22] }, 
-            { t: "Том II: Как по маслу но без смазки", r: [23, 100] }
+            { t: "Том II: Как по маслу", r: [23, 100] }
         ];
 
         vols.forEach(v => {
             const chs = bookData.filter(c => 
-                c.id >= v.r[0] && 
-                c.id <= v.r[1] && 
+                c.id >= v.r[0] && c.id <= v.r[1] && 
                 (c.title.toLowerCase().includes(searchTerm) || c.id.toString().includes(searchTerm))
             );
 
             if (chs.length > 0) {
                 const completedCount = chs.filter(ch => getP(ch.id).perc >= 98).length;
-                const totalProgress = Math.round((completedCount / chs.length) * 100);
-
                 const sec = document.createElement('div');
                 sec.innerHTML = `
                     <div class="volume-header">
                         <h2>${v.t}</h2>
                         <div class="volume-line"></div>
-                        <div class="volume-stats">${completedCount}/${chs.length} ЗАКРЫТО (${totalProgress}%)</div>
+                        <div class="volume-stats">${completedCount}/${chs.length}</div>
                     </div>
                     <div class="chapters-grid"></div>`;
                 
@@ -440,9 +474,7 @@
                             <div style="font-family:'Montserrat'; font-weight:800; font-size:0.6rem; color:var(--gold);">ГЛАВА ${ch.id}</div>
                             <div class="ch-name">${ch.title}</div>
                         </div>
-                        <div style="font-size:0.55rem; opacity:0.5; margin-top:10px; font-family:'Montserrat';">
-                            ${p.perc >= 98 ? '✅ ПРОЧИТАНО' : `📊 ${p.perc}% ПРОЙДЕНО`}
-                        </div>`;
+                        <div style="font-size:0.55rem; opacity:0.5; margin-top:10px;">${p.perc >= 98 ? '✅' : p.perc + '%'}</div>`;
                     grid.appendChild(card);
                 });
                 cont.appendChild(sec);
@@ -450,8 +482,11 @@
         });
     }
 
-    renderVolumes();
-    getEmilQuote();
+    window.onload = () => {
+        renderVolumes();
+        getEmilQuote();
+        autoTheme();
+    };
 </script>
 </body>
 </html>
