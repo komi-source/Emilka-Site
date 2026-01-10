@@ -66,6 +66,8 @@
         .quote-hint { margin-top: 15px; font-size: 0.65rem; color: var(--gold); font-family: 'Montserrat'; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 5px; text-transform: uppercase; }
         .quote-hint span { animation: pulse 1.5s infinite; }
 
+        .share-quote-btn { background: none; border: 1px solid rgba(198, 166, 103, 0.3); color: var(--gold); font-size: 0.6rem; padding: 5px 10px; border-radius: 5px; margin-top: 10px; cursor: pointer; text-transform: uppercase; font-family: 'Montserrat'; }
+
         @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
 
         /* Поиск и Фильтры */
@@ -122,7 +124,7 @@
         .reader-hint { background: rgba(198, 166, 103, 0.1); border: 1px dashed var(--gold); padding: 12px; border-radius: 10px; font-size: 0.8rem; text-align: center; margin-bottom: 30px; color: var(--gold); font-style: italic; }
 
         .tool-btn { background: #1a1a1a; border: 1.5px solid var(--gold); color: var(--gold); padding: 8px 12px; cursor: pointer; font-size: 0.7rem; font-family: 'Montserrat'; text-transform: uppercase; border-radius: 8px; font-weight: 800; transition: 0.2s; }
-        .tool-btn:active { background: var(--gold); color: #000; }
+        .tool-btn:active, .tool-btn.active { background: var(--gold); color: #000; }
 
         .btn-download { background: var(--gold) !important; color: #000 !important; border: none !important; margin-top: 10px; padding: 10px 15px !important; }
 
@@ -130,7 +132,7 @@
         .theme-paper { background-color: #f4f1ea !important; color: #1a1a1a !important; }
         .theme-dark { background-color: #0d0d0d !important; color: #d1d1d1 !important; }
         .theme-sepia { background-color: var(--sepia-bg) !important; color: var(--sepia-text) !important; }
-        .theme-night { background-color: #030303 !important; color: #666 !important; } /* Новая тема */
+        .theme-night { background-color: #030303 !important; color: #666 !important; } 
 
         /* ОКНО КОММЕНТАРИЕВ */
         #comments-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; }
@@ -175,6 +177,7 @@
         <div class="quote-box" onclick="getEmilQuote()">
             <div id="emil-quote">Загрузка мудрости...</div>
             <div class="quote-hint"><span>👆</span> Нажми на окно, чтобы сгенерить базу</div>
+            <button class="share-quote-btn" onclick="shareQuote(event)">📤 Поделиться базой</button>
         </div>
 
         <div style="margin-top: 25px;">
@@ -193,6 +196,7 @@
     <div class="toolbar" id="topBar">
         <button class="tool-btn" onclick="closeBook()">← МЕНЮ</button>
         <div style="display: flex; gap: 5px;">
+            <button class="tool-btn" id="autoscrollBtn" onclick="toggleAutoscroll()">🚀</button>
             <button class="tool-btn" onclick="changeSize(2)">A+</button>
             <button class="tool-btn" onclick="changeSize(-2)">A-</button>
         </div>
@@ -333,6 +337,37 @@
     const audio = document.getElementById('bgMusic');
     const musicBtn = document.getElementById('musicBtn');
     let currentId = 1;
+    let autoScrollInterval = null;
+
+    // ФУНКЦИЯ 4: ПОДЕЛИТЬСЯ МУДРОСТЬЮ
+    function shareQuote(e) {
+        e.stopPropagation();
+        const text = document.getElementById('emil-quote').innerText;
+        const fullText = `«${text}»\n\n— Эмиль Гиенович, "Причудливые авантюры"`;
+        
+        navigator.clipboard.writeText(fullText).then(() => {
+            showToast("База скопирована в буфер! 📋");
+        }).catch(() => {
+            showToast("Ошибка копирования");
+        });
+    }
+
+    // УДОБНАЯ ФУНКЦИЯ: АВТО-СКРОЛЛ
+    function toggleAutoscroll() {
+        const btn = document.getElementById('autoscrollBtn');
+        if (autoScrollInterval) {
+            clearInterval(autoScrollInterval);
+            autoScrollInterval = null;
+            btn.classList.remove('active');
+            showToast("Авто-скролл выключен");
+        } else {
+            btn.classList.add('active');
+            showToast("Авто-скролл: Взлетаем! 🚀");
+            autoScrollInterval = setInterval(() => {
+                reader.scrollBy(0, 1);
+            }, 30); // Скорость прокрутки
+        }
+    }
 
     // МУЗЫКА
     function toggleMusic() {
@@ -393,7 +428,7 @@
         document.body.style.overflow = 'hidden';
         const saved = getP(id);
         setTimeout(() => { reader.scrollTop = saved.pos; }, 50);
-        autoTheme(); // Проверяем тему при открытии главы
+        autoTheme(); 
     }
 
     function downloadChapter() {
@@ -431,7 +466,13 @@
         c.style.fontSize = (s + d) + 'px';
     }
 
-    function closeBook() { reader.style.display = 'none'; document.body.style.overflow = 'auto'; renderVolumes(); }
+    function closeBook() { 
+        if(autoScrollInterval) toggleAutoscroll();
+        reader.style.display = 'none'; 
+        document.body.style.overflow = 'auto'; 
+        renderVolumes(); 
+    }
+    
     function nextChapter() { if(currentId < bookData.length) openChapter(currentId + 1); }
     function prevChapter() { if(currentId > 1) openChapter(currentId - 1); }
     function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2500); }
