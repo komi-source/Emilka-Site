@@ -19,6 +19,33 @@
         
         .progress-line { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0%; z-index: 10000; transition: width 0.3s; }
 
+        /* НОВАЯ СВЕТЯЩАЯСЯ НАДПИСЬ */
+        .real-events-badge {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: #fff;
+            text-transform: uppercase;
+            margin-top: 15px;
+            text-shadow: 
+                0 0 7px rgba(198, 166, 103, 0.7),
+                0 0 10px rgba(198, 166, 103, 0.5),
+                0 0 21px rgba(198, 166, 103, 0.2);
+            animation: neon-flicker 2s infinite alternate;
+            opacity: 0.9;
+        }
+
+        @keyframes neon-flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: 0 0 7px rgba(198, 166, 103, 0.8), 0 0 15px rgba(198, 166, 103, 0.4);
+            }
+            20%, 22%, 24%, 55% {
+                text-shadow: none;
+                opacity: 0.5;
+            }
+        }
+
         /* УЛУЧШЕННАЯ СТЕКЛЯННАЯ КНОПКА */
         .glass-btn {
             margin-top: 20px;
@@ -48,7 +75,7 @@
             box-shadow: 0 15px 40px rgba(198, 166, 103, 0.2);
         }
 
-        .online-counter { font-family: 'Montserrat'; font-size: 0.65rem; color: #2ecc71; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; display: flex; align-items: center; gap: 5px; opacity: 0.8; }
+        .online-counter { font-family: 'Montserrat'; font-size: 0.65rem; color: #2ecc71; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; display: flex; align-items: center; gap: 5px; opacity: 0.8; }
         .online-dot { width: 6px; height: 6px; background: #2ecc71; border-radius: 50%; display: inline-block; animation: pulse-green 1.5s infinite; }
         @keyframes pulse-green { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
 
@@ -84,11 +111,11 @@
         .music-playing { animation: pulse-gold 2s infinite; }
         @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(198, 166, 103, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(198, 166, 103, 0); } 100% { box-shadow: 0 0 0 0 rgba(198, 166, 103, 0); } }
         
-        .hero { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; background: radial-gradient(circle at center, #1a1a1a 0%, #080808 100%); border-bottom: 1px solid #222; }
+        .hero { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; background: radial-gradient(circle at center, #1a1a1a 0%, #080808 100%); border-bottom: 1px solid #222; }
         .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(1.2rem, 5vw, 1.8rem); color: var(--gold); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 5px; padding: 0 10px; }
         .hero-subtitle { font-size: 0.7rem; letter-spacing: 2px; opacity: 0.5; margin-bottom: 10px; }
         
-        .quote-box { background: linear-gradient(145deg, #161616, #0d0d0d); border: 1px solid var(--gold); padding: 25px 20px; border-radius: 20px; max-width: 420px; cursor: pointer; position: relative; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); margin: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .quote-box { background: linear-gradient(145deg, #161616, #0d0d0d); border: 1px solid var(--gold); padding: 25px 20px; border-radius: 20px; max-width: 420px; cursor: pointer; position: relative; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); margin: 20px 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         #emil-quote { font-style: italic; font-size: 1rem; line-height: 1.5; color: #eee; transition: opacity 0.3s; min-height: 3em; display: flex; align-items: center; justify-content: center; }
         .quote-hint { margin-top: 15px; font-size: 0.65rem; color: var(--gold); font-family: 'Montserrat'; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 5px; text-transform: uppercase; }
         
@@ -110,13 +137,11 @@
         .book-content { max-width: 650px; margin: 0 auto; padding: 20px 15px 100px; line-height: 1.8; font-size: 1.15rem; min-height: 100vh; transition: background-color 0.4s ease, color 0.4s ease, font-size 0.3s ease; }
         .reader-hint { background: rgba(198, 166, 103, 0.1); border: 1px dashed var(--gold); padding: 12px; border-radius: 10px; font-size: 0.8rem; text-align: center; margin-bottom: 30px; color: var(--gold); font-style: italic; }
         
-        /* Темы */
         .theme-paper { background-color: #f4f1ea !important; color: #1a1a1a !important; }
         .theme-dark { background-color: #0d0d0d !important; color: #d1d1d1 !important; }
         .theme-sepia { background-color: var(--sepia-bg) !important; color: var(--sepia-text) !important; }
         .theme-night { background-color: #030303 !important; color: #666 !important; } 
 
-        /* Комментарии */
         #comments-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; }
         .comm-wrapper { display: flex; flex-direction: column; height: 100%; max-width: 600px; margin: 0 auto; background: #080808; }
         .comm-header { padding: 20px; border-bottom: 1px solid #222; color: var(--gold); font-family: 'Playfair Display'; display: flex; justify-content: space-between; align-items: center; }
@@ -149,6 +174,8 @@
         <div class="hero-title">ПРИЧУДЛИВЫЕ АВАНТЮРЫ ЭМИЛЯ ГИЕНОВИЧА</div>
         <div class="hero-subtitle">ЭМИЛЬ СТЭТХЭМ</div>
         
+        <div class="real-events-badge">Основано на реальных событиях</div>
+
         <div class="online-counter">
             <span class="online-dot"></span>
             <span id="onlineCount">Читают: 14</span> шакалов онлайн
@@ -164,7 +191,7 @@
             <button class="share-quote-btn" onclick="shareQuote(event)">📤 Поделиться базой</button>
         </div>
 
-        <div style="margin-top: 25px;">
+        <div style="margin-top: 10px;">
             <button class="book-btn" onclick="openComments('global')" style="padding: 12px 30px; border-radius: 50px;">💬 ОБЩИЙ ЧАТ</button>
         </div>
     </div>
@@ -336,116 +363,63 @@
 
     function initAudioContext() {}
 
-    // --- ГЛОБАЛЬНАЯ ФУНКЦИЯ СКАЧИВАНИЯ ВСЕЙ КНИГИ ---
     window.downloadFullBook = function() {
-        // Проверка наличия данных в chapters.js
         if (typeof bookData === 'undefined' || !Array.isArray(bookData) || bookData.length === 0) {
-            showToast("⚠️ Ошибка: Данные глав еще не загружены. Попробуйте через секунду.");
+            showToast("⚠️ Ошибка: Данные глав еще не загружены.");
             return;
         }
-
         showToast("⏳ Собираем все главы...");
-
-        let txt = "\ufeff"; // Добавляем BOM для правильной кодировки кириллицы в Windows
-        txt += "------------------------------------------\n";
-        txt += "ПРИЧУДЛИВЫЕ АВАНТЮРЫ ЭМИЛЯ ГИЕНОВИЧА\n";
-        txt += "Автор: Алекс riyuun0suke\n";
-        txt += "Полная книга\n";
-        txt += "------------------------------------------\n\n";
-
-        // Сортируем главы по ID на всякий случай
+        let txt = "\ufeff------------------------------------------\nПРИЧУДЛИВЫЕ АВАНТЮРЫ ЭМИЛЯ ГИЕНОВИЧА\nАвтор: Алекс riyuun0suke\n------------------------------------------\n\n";
         const sorted = [...bookData].sort((a,b) => a.id - b.id);
-
         sorted.forEach(ch => {
-            txt += `ГЛАВА ${ch.id}: ${ch.title.toUpperCase()}\n`;
-            txt += "=".repeat(30) + "\n\n";
-            txt += ch.content + "\n\n";
-            txt += "-".repeat(30) + "\n\n";
+            txt += `ГЛАВА ${ch.id}: ${ch.title.toUpperCase()}\n` + "=".repeat(30) + `\n\n${ch.content}\n\n` + "-".repeat(30) + "\n\n";
         });
-
-
-
-        try {
-            const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = "Emil_Gienovich_FULL.txt";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showToast("✅ Книга сохранена!");
-        } catch (e) {
-            console.error(e);
-            showToast("❌ Ошибка при скачивании");
-        }
+        const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = "Emil_Gienovich_FULL.txt";
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast("✅ Книга сохранена!");
     };
 
     function toggleTTS() {
         const btn = document.getElementById('ttsBtn');
         if (ttsActive) {
-            synth.cancel();
-            ttsActive = false;
-            btn.classList.remove('active');
-            btn.innerText = "📜 Читать вслух";
-            showToast("Озвучка остановлена");
+            synth.cancel(); ttsActive = false; btn.classList.remove('active'); btn.innerText = "📜 Читать вслух";
         } else {
             const text = document.getElementById('chapterBody').innerText;
             utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'ru-RU';
-            utterance.rate = 1.1;
-            utterance.pitch = 0.9;
+            utterance.lang = 'ru-RU'; utterance.rate = 1.1;
             utterance.onstart = () => { ttsActive = true; btn.classList.add('active'); btn.innerText = "⏸ Остановить"; };
             utterance.onend = () => { ttsActive = false; btn.classList.remove('active'); btn.innerText = "📜 Читать вслух"; };
             synth.speak(utterance);
-            showToast("Голос Эмиля вещает...");
         }
     }
 
     function toggleAutoscroll() {
         const btn = document.getElementById('autoscrollBtn');
         if (autoScrollInterval) {
-            clearInterval(autoScrollInterval);
-            autoScrollInterval = null;
-            btn.classList.remove('active');
-            showToast("Свободные руки: Выкл");
+            clearInterval(autoScrollInterval); autoScrollInterval = null; btn.classList.remove('active');
         } else {
             btn.classList.add('active');
-            showToast("Летим! 🚀");
             autoScrollInterval = setInterval(() => { reader.scrollBy(0, 1); }, 35);
         }
     }
 
     function toggleMusic() {
         if (audio.paused) {
-            audio.play();
-            document.getElementById('musicIcon').innerText = '⏸️';
-            musicBtn.classList.add('music-playing');
+            audio.play(); document.getElementById('musicIcon').innerText = '⏸️'; musicBtn.classList.add('music-playing');
         } else {
-            audio.pause();
-            document.getElementById('musicIcon').innerText = '🎵';
-            musicBtn.classList.remove('music-playing');
+            audio.pause(); document.getElementById('musicIcon').innerText = '🎵'; musicBtn.classList.remove('music-playing');
         }
     }
 
-    const quotes = [
-        "Волк не тот, кто волк, а тот, кто поел и спит.",
-        "Запомни: лучше прийти на 5 минут позже, чем на 50 лет раньше.",
-        "Если тебе плюют в спину — значит ты впереди.",
-        "Жизнь — это как шахматы. Я в них не играю, я продаю доску.",
-        "Одна ошибка — и ты ошибся.",
-        "Кто рано встает — тому весь день спать хочется."
-    ];
-
+    const quotes = ["Волк не тот, кто волк, а тот, кто поел и спит.", "Запомни: лучше прийти на 5 минут позже, чем на 50 лет раньше.", "Если тебе плюют в спину — значит ты впереди.", "Одна ошибка — и ты ошибся."];
     function getEmilQuote() {
         const el = document.getElementById('emil-quote');
-        if(!el) return;
         el.style.opacity = 0;
-        setTimeout(() => {
-            el.innerText = quotes[Math.floor(Math.random() * quotes.length)];
-            el.style.opacity = 1;
-        }, 200);
+        setTimeout(() => { el.innerText = quotes[Math.floor(Math.random() * quotes.length)]; el.style.opacity = 1; }, 200);
     }
 
     function getP(id) { return JSON.parse(localStorage.getItem(`p_v11_${id}`) || '{"perc":0,"pos":0}'); }
@@ -469,14 +443,10 @@
 
     function downloadChapter() {
         const ch = bookData.find(c => c.id === currentId);
-        if(!ch) return;
         const fileText = `\ufeffЭМИЛЬ ГИЕНОВИЧ\nГлава ${ch.id}: ${ch.title}\n\n${ch.content}`;
         const blob = new Blob([fileText], { type: 'text/plain;charset=utf-8' });
         const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `Glava_${ch.id}.txt`;
-        link.click();
-        showToast("Глава сохранена 📥");
+        link.href = URL.createObjectURL(blob); link.download = `Glava_${ch.id}.txt`; link.click();
     }
 
     function onReaderScroll() {
