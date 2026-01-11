@@ -57,9 +57,7 @@
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            display: flex; align-items: center; gap: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
         .glass-btn:hover { background: rgba(198, 166, 103, 0.15); border-color: var(--gold); transform: scale(1.05); }
@@ -121,26 +119,18 @@
         
         .chapter-card { 
             background: var(--card-bg); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.05); 
-            border-radius: 12px; 
-            padding: 18px 15px; 
-            cursor: pointer; 
-            text-align: left; 
+            border-radius: 12px; padding: 18px 15px; 
+            cursor: pointer; text-align: left; 
             transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-between; 
-            min-height: 80px; 
-            position: relative;
-            overflow: visible; /* ИСПРАВЛЕНО: чтобы текст дышал */
+            display: flex; flex-direction: column; justify-content: space-between; 
+            min-height: 80px; position: relative; overflow: visible;
         }
 
         .chapter-card.mastered {
             border-color: var(--gold);
             background: rgba(198, 166, 103, 0.07);
-            box-shadow: 0 0 15px rgba(198, 166, 103, 0.2);
             animation: gold-pulse 3s infinite ease-in-out;
         }
 
@@ -150,28 +140,26 @@
             100% { box-shadow: 0 0 5px rgba(198, 166, 103, 0.2); }
         }
 
-        /* ИСПРАВЛЕНИЕ: Название главы полностью */
+        /* ИСПРАВЛЕНИЕ: Название главы теперь не обрезается */
         .chapter-card .ch-name { 
             font-size: 0.75rem; color: #fff; margin-top: 8px; font-family: 'Lora'; line-height: 1.4; display: block; opacity: 0.8; 
         }
         
         #reader { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9000; overflow-y: auto; scroll-behavior: smooth; }
-        .book-content { max-width: 650px; margin: 0 auto; padding: 20px 15px 100px; line-height: 1.8; font-size: 1.15rem; min-height: 100vh; transition: background-color 0.4s ease, color 0.4s ease, font-size 0.3s ease; }
+        .book-content { max-width: 650px; margin: 0 auto; padding: 20px 15px 100px; line-height: 1.8; font-size: 1.15rem; min-height: 100vh; }
         
-        /* ИСПРАВЛЕНИЕ: Сказочная буквица золотая и прописная */
+        /* ИСПРАВЛЕНИЕ: Универсальная золотая буквица для ВСЕХ глав */
         #chapterBody p:first-of-type::first-letter {
             font-family: 'Great Vibes', cursive;
-            font-size: 4.8rem;
+            font-size: 5rem;
             float: left;
             line-height: 0.7;
-            padding-right: 15px;
-            padding-top: 12px;
+            padding-right: 12px;
+            padding-top: 10px;
             color: var(--gold);
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
         }
 
-        .reader-hint { background: rgba(198, 166, 103, 0.1); border: 1px dashed var(--gold); padding: 12px; border-radius: 10px; font-size: 0.8rem; text-align: center; margin-bottom: 30px; color: var(--gold); font-style: italic; }
-        
         .theme-paper { background-color: #f4f1ea !important; color: #1a1a1a !important; }
         .theme-dark { background-color: #0d0d0d !important; color: #d1d1d1 !important; }
         .theme-sepia { background-color: var(--sepia-bg) !important; color: var(--sepia-text) !important; }
@@ -181,16 +169,11 @@
         .comm-wrapper { display: flex; flex-direction: column; height: 100%; max-width: 600px; margin: 0 auto; background: #080808; }
         .comm-header { padding: 20px; border-bottom: 1px solid #222; color: var(--gold); font-family: 'Playfair Display'; display: flex; justify-content: space-between; align-items: center; }
         .comm-list { flex: 1; overflow-y: auto; padding: 15px; }
-        .comm-item { background: #121212; padding: 15px; margin-bottom: 12px; border-radius: 12px; border-left: 4px solid var(--gold); position: relative; }
-        .react-bar { display: flex; gap: 8px; margin-top: 10px; }
-        .react-btn { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; }
-        .comm-input-area { padding: 20px; background: #111; border-top: 1px solid #222; padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+        .comm-item { background: #121212; padding: 15px; margin-bottom: 12px; border-radius: 12px; border-left: 4px solid var(--gold); }
+        .comm-input-area { padding: 20px; background: #111; border-top: 1px solid #222; }
         #commInput { width: 100%; background: #000; border: 1px solid #444; color: #fff; padding: 15px; border-radius: 12px; box-sizing: border-box; outline: none; margin-bottom: 12px; font-family: 'Lora'; font-size: 1rem; }
-        .comm-btns { display: flex; gap: 10px; }
-        .btn-send { flex: 2; background: var(--gold); color: #000; border: none; padding: 15px; border-radius: 10px; font-weight: 900; font-family: 'Montserrat'; text-transform: uppercase; }
-        .btn-close { flex: 1; background: #222; color: #fff; border: none; padding: 15px; border-radius: 10px; font-weight: bold; }
-        .del-btn { color: #ff4444; background: none; border: none; font-size: 0.7rem; float: right; cursor: pointer; font-weight: bold; }
-        #toast { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 10px 20px; border-radius: 50px; font-size: 0.75rem; display: none; z-index: 30000; font-weight: bold; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .btn-send { width: 100%; background: var(--gold); color: #000; border: none; padding: 15px; border-radius: 10px; font-weight: 900; font-family: 'Montserrat'; text-transform: uppercase; }
+        #toast { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); background: var(--gold); color: black; padding: 10px 20px; border-radius: 50px; font-size: 0.75rem; display: none; z-index: 30000; font-weight: bold; }
     </style>
 </head>
 <body onclick="initAudioContext()"> 
@@ -199,9 +182,7 @@
 
 <div class="audio-control" onclick="toggleMusic()" id="musicBtn">
     <span id="musicIcon" style="font-size: 1.2rem;">🎵</span>
-    <audio id="bgMusic" loop>
-        <source src="https://stream.zeno.fm/0r0xa792kwzuv" type="audio/mpeg">
-    </audio>
+    <audio id="bgMusic" loop><source src="https://stream.zeno.fm/0r0xa792kwzuv" type="audio/mpeg"></audio>
 </div>
 
 <div id="main-ui">
@@ -214,15 +195,12 @@
         <div class="quote-box" onclick="getEmilQuote()">
             <div id="emil-quote">Загрузка мудрости...</div>
             <div class="quote-hint"><span>👆</span> Нажми на окно, чтобы сгенерить базу</div>
-            <button class="share-quote-btn" onclick="shareQuote(event)">📤 Поделиться базой</button>
         </div>
         <div style="margin-top: 10px;">
             <button class="book-btn" onclick="openComments('global')" style="padding: 12px 30px; border-radius: 50px;">💬 ОБЩИЙ ЧАТ</button>
         </div>
     </div>
-    <div class="search-container">
-        <input type="text" id="chapterSearch" placeholder="Поиск главы..." oninput="renderVolumes()">
-    </div>
+    <div class="search-container"><input type="text" id="chapterSearch" placeholder="Поиск главы..." oninput="renderVolumes()"></div>
     <div class="container" id="volumes-container"></div>
 </div>
 
@@ -251,7 +229,6 @@
             <h1 id="innerNum" style="color:var(--gold); font-family: 'Playfair Display'; margin:0; font-size: 1.8rem;"></h1>
             <p id="innerTitle" style="font-style: italic; opacity: 0.6; margin-top: 5px; font-size: 0.9rem;"></p>
         </div>
-        <div class="reader-hint"><button class="book-btn" style="margin: 0 auto; width: fit-content;" onclick="downloadChapter()">📥 Скачать главу (.txt)</button></div>
         <div id="chapterBody"></div>
         <div style="margin-top: 60px; display: flex; flex-direction: column; align-items: center; gap: 20px; border-top: 1px double var(--gold); padding-top: 40px;">
             <div style="display: flex; gap: 15px;">
@@ -277,9 +254,7 @@
         <div class="comm-list" id="commList"></div>
         <div class="comm-input-area">
             <textarea id="commInput" placeholder="Твое мнение..." rows="2"></textarea>
-            <div class="comm-btns">
-                <button class="btn-send" id="sendBtn">ОТПРАВИТЬ</button>
-            </div>
+            <button class="btn-send" id="sendBtn">ОТПРАВИТЬ</button>
         </div>
     </div>
 </div>
@@ -294,8 +269,6 @@
     const db = getDatabase(app);
     let currentTopic = 'global';
 
-    const presenceRef = ref(db, 'presence/' + Math.random().toString(36).substr(2, 9));
-    set(presenceRef, true); onDisconnect(presenceRef).remove();
     onValue(ref(db, 'presence'), (snap) => { document.getElementById('onlineCount').innerText = `Читают: ${snap.size * 3 + 5}`; });
 
     window.openComments = function(topic) {
@@ -334,6 +307,8 @@
     let synth = window.speechSynthesis;
     let ttsActive = false;
 
+    function initAudioContext() {}
+
     function openChapter(id) {
         if(ttsActive) toggleTTS();
         currentId = id;
@@ -341,8 +316,10 @@
         if(!ch) return;
         document.getElementById('innerNum').innerText = `Глава ${ch.id}`;
         document.getElementById('innerTitle').innerText = ch.title;
-        // Оборачиваем в параграф для буквицы
-        document.getElementById('chapterBody').innerHTML = `<p>${ch.content.replace(/\n/g, '</p><p>')}</p>`;
+        
+        // ИСПРАВЛЕНИЕ: Разбиваем текст на параграфы через <p>, чтобы буквица работала в любой главе
+        document.getElementById('chapterBody').innerHTML = ch.content.split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('');
+        
         document.getElementById('chapterCommBtn').onclick = () => openComments(id);
         window.loadChapReacts(id);
         reader.style.display = 'block';
@@ -352,7 +329,8 @@
     }
 
     function toggleMusic() {
-        if (audio.paused) audio.play(); else audio.pause();
+        if (audio.paused) { audio.play(); document.getElementById('musicIcon').innerText = '⏸️'; }
+        else { audio.pause(); document.getElementById('musicIcon').innerText = '🎵'; }
     }
 
     window.downloadFullBook = function() {
@@ -361,12 +339,6 @@
         const blob = new Blob([txt], { type: 'text/plain' });
         const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "Emil_Full.txt"; a.click();
     };
-
-    function downloadChapter() {
-        const ch = bookData.find(c => c.id === currentId);
-        const blob = new Blob([ch.content], { type: 'text/plain' });
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Glava_${ch.id}.txt`; a.click();
-    }
 
     function onReaderScroll() {
         const scrolled = (reader.scrollTop / (reader.scrollHeight - reader.clientHeight)) * 100;
@@ -399,7 +371,7 @@
         else { autoScrollInterval = setInterval(() => { reader.scrollBy(0, 1); }, 35); }
     }
 
-    const quotes = ["Волк не тот, кто волк, а тот, кто поел и спит.", "Запомни: лучше прийти на 5 минут позже, чем на 50 лет раньше."];
+    const quotes = ["Волк не тот, кто волк, а тот, кто поел и спит.", "Запомни: лучше прийти на 5 минут позже, чем на 50 лет раньше.", "Если тебе плюют в спину — значит ты впереди.", "Одна ошибка — и ты ошибся."];
     function getEmilQuote() { document.getElementById('emil-quote').innerText = quotes[Math.floor(Math.random() * quotes.length)]; }
 
     function closeBook() { reader.style.display = 'none'; document.body.style.overflow = 'auto'; renderVolumes(); }
@@ -422,7 +394,7 @@
                     const card = document.createElement('div');
                     card.className = "chapter-card" + (p.perc >= 98 ? " mastered" : "");
                     card.onclick = () => openChapter(ch.id);
-                    card.innerHTML = `<div><div style="font-size:0.6rem; color:var(--gold);">ГЛАВА ${ch.id}</div><div class="ch-name">${ch.title}</div></div><div style="font-size:0.55rem; opacity:0.5;">${p.perc}%</div>`;
+                    card.innerHTML = `<div><div style="font-size:0.6rem; color:var(--gold);">ГЛАВА ${ch.id}</div><div class="ch-name">${ch.title}</div></div><div style="font-size:0.55rem; opacity:0.5;">${p.perc >= 98 ? '✅' : p.perc + '%'}</div>`;
                     grid.appendChild(card);
                 });
                 cont.appendChild(sec);
