@@ -23,12 +23,7 @@ An immersive web platform designed for reading an original legendary novel about
 - **State Management:** The application tracks the current chapter and updates the UI in real-time.
 - **Automated Deployment:** Connected to Netlify for continuous delivery every time a new chapter is pushed to the repository.
 
-## 📸 Screenshots
 
-<div align="center">
-  <img src="https://via.placeholder.com/600x300?text=Novel+Interface+Preview" alt="Site Preview" width="600"/>
-  <p><em>The clean and minimalistic interface of the Emilka Novel site.</em></p>
-</div>
 
 ## 🚀 How to Add New Chapters
 
