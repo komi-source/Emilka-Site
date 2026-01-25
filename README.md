@@ -24,12 +24,12 @@ A stylish, interactive web-novel platform built to deliver an immersive reading 
 
 |          Landing Page           |        Chapter Selection         |
 | :-----------------------------: | :------------------------------: |
-| ![Main Screen](assets/main.jpg) | ![Chapters](assets/chapters.jpg) |
+| ![Main Screen](main.jpg) | ![Chapters](chapters.jpg) |
 |    *Interactive Home Screen* |  *Volume I: Devils and Jackals* |
 
 |           Reading Experience           |               User Chat               |
 | :------------------------------------: | :-----------------------------------: |
-| ![Reader Interface](assets/reader.jpg) | ![Comment System](assets/comment.jpg) |
+| ![Reader Interface](reader.jpg) | ![Comment System](comment.jpg) |
 |       *Customizable Reading UI* |        *Community Interaction* |
 
 ---
