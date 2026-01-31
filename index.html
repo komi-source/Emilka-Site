@@ -381,7 +381,7 @@
         const cont = document.getElementById('volumes-container');
         const search = document.getElementById('chapterSearch').value.toLowerCase();
         cont.innerHTML = '';
-        const vols = [{ t: "Том I: Черти и Шакалы", r: [1, 22] }, { t: "Том II: Адское путешествие", r: [23, 40] }, { t: "Том III: Где-то под землёй", r: [41, 150] }];
+        const vols = [{ t: "Том I: Черти и Шакалы", r: [1, 22] }, { t: "Том II: Адское путешествие", r: [23, 40] }, { t: "Том III: Потусторонний мир", r: [41, 150] }];
         vols.forEach(v => {
             const chs = bookData.filter(c => c.id >= v.r[0] && c.id <= v.r[1] && (c.title.toLowerCase().includes(search) || c.id.toString().includes(search)));
             if (chs.length > 0) {
