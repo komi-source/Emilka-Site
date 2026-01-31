@@ -55,14 +55,7 @@ A stylish, interactive web-novel platform built to deliver an immersive reading 
 
 ## 📖 About the Project
 
-The novel follows the extraordinary journey of **Emil Statham**. The story blends mystery, humor, and "real-life events," taking the reader from the "Origin of Life" to complex encounters with enemies and allies.
+The novel follows the extraordinary journey of **Emil**. The story blends mystery, humor, and "real-life events," taking the reader from the "Origin of Life" to complex encounters with enemies and allies.
 
 > **"Remember: it's better to arrive 5 minutes late than 50 years early."**
 
----
-
-## 🚀 Installation & Local Development
-
-1. Clone the repository:
-   ```bash
-   git clone [https://github.com/your-username/emilkanovel.git](https://github.com/your-username/emilkanovel.git)
