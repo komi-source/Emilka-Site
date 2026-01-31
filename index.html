@@ -317,7 +317,6 @@
         document.getElementById('innerNum').innerText = `Глава ${ch.id}`;
         document.getElementById('innerTitle').innerText = ch.title;
         
-        // ИСПРАВЛЕНИЕ: Разбиваем текст на параграфы через <p>, чтобы буквица работала в любой главе
         document.getElementById('chapterBody').innerHTML = ch.content.split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('');
         
         document.getElementById('chapterCommBtn').onclick = () => openComments(id);
@@ -382,7 +381,7 @@
         const cont = document.getElementById('volumes-container');
         const search = document.getElementById('chapterSearch').value.toLowerCase();
         cont.innerHTML = '';
-        const vols = [{ t: "Том I: Черти и Шакалы", r: [1, 22] }, { t: "Том II: Адское путешествие", r: [23, 100] }];
+        const vols = [{ t: "Том I: Черти и Шакалы", r: [1, 22] }, { t: "Том II: Адское путешествие", r: [23, 40] }, { t: "Том III: Под землёй", r: [41, 150] }];
         vols.forEach(v => {
             const chs = bookData.filter(c => c.id >= v.r[0] && c.id <= v.r[1] && (c.title.toLowerCase().includes(search) || c.id.toString().includes(search)));
             if (chs.length > 0) {
